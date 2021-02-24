@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.marcoeckstein</groupId>
+    <artifactId>binance-private-api-kotlin</artifactId>
+    <version>0.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>binance-private-api-kotlin</name>
+    <description>
+        Unofficial client for the undocumented private Binance REST API.
+        Implemented in Kotlin, usable from any JVM language including Java.
+    </description>
+    <url>https://github.com/marco-eckstein/binance-private-api-kotlin</url>
+    <inceptionYear>2021</inceptionYear>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/marco-eckstein/binance-private-api-kotlin/issues</url>
+    </issueManagement>
+    <scm>
+        <connection>scm:git:https://github.com/marco-eckstein/binance-private-api-kotlin</connection>
+        <developerConnection>scm:git:https://github.com/marco-eckstein/binance-private-api-kotlin
+        </developerConnection>
+        <url>https://github.com/marco-eckstein/binance-private-api-kotlin</url>
+    </scm>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kotlin.version>1.4.21</kotlin.version>
+        <kotlin.compiler.jvmTarget>11</kotlin.compiler.jvmTarget>
+        <kotlin.serialization.version>1.1.0</kotlin.serialization.version>
+        <kotlin.code.style>official</kotlin.code.style>
+        <junit.version>5.6.0</junit.version>
+        <!--
+        ktlint.disabled_rules:
+            filename:
+                Caught more precisely (with desired exceptions) with detekt.
+            import-ordering:
+                ktlint's order is not supported (yet) by IntelliJ.
+                See:
+                - https://github.com/pinterest/ktlint/issues/527
+                - https://youtrack.jetbrains.com/issue/KT-10974
+            no-wildcard-imports:
+                Not desired. We want them for Java statics and Enum members.
+            experimental:annotation:
+                Not desired.
+            experimental:multiline-if-else:
+                Not desired.
+        -->
+        <ktlint.disabled_rules>
+            filename,
+            import-ordering,
+            no-wildcard-imports,
+            experimental:annotation,
+            experimental:multiline-if-else
+        </ktlint.disabled_rules>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-serialization-json</artifactId>
+            <version>${kotlin.serialization.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jakewharton.retrofit</groupId>
+            <artifactId>retrofit2-kotlinx-serialization-converter</artifactId>
+            <version>0.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>30.1-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>logging-interceptor</artifactId>
+            <version>3.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.binance-exchange</groupId>
+            <artifactId>binance-java-api</artifactId>
+            <!--suppress MavenModelInspection -->
+            <version>-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit5</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-assertions-core-jvm</artifactId>
+            <version>4.4.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <args>
+                        <arg>-Xjsr305=strict</arg>
+                    </args>
+                    <compilerPlugins>
+                        <plugin>kotlinx-serialization</plugin>
+                    </compilerPlugins>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-serialization</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>ktlint</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <target name="ktlint">
+                                <java taskname="ktlint"
+                                    dir="${basedir}"
+                                    fork="true"
+                                    failonerror="true"
+                                    classname="com.pinterest.ktlint.Main"
+                                    classpathref="maven.plugin.classpath">
+                                    <arg value="--experimental"/>
+                                    <arg value="--relative"/>
+                                    <arg value="--verbose"/>
+                                    <arg value="--disabled_rules=${ktlint.disabled_rules}"/>
+                                    <arg value="--editorconfig=${basedir}/.editorconfig"/>
+                                </java>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>detekt</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <target name="detekt">
+                                <java taskname="detekt"
+                                    dir="${basedir}"
+                                    fork="true"
+                                    failonerror="true"
+                                    classname="io.gitlab.arturbosch.detekt.cli.Main"
+                                    classpathref="maven.plugin.classpath">
+                                    <arg value="--build-upon-default-config"/>
+                                    <arg value="--config"/>
+                                    <arg value="${basedir}/detekt-config.yml"/>
+                                </java>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.pinterest</groupId>
+                        <artifactId>ktlint</artifactId>
+                        <version>0.40.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>io.gitlab.arturbosch.detekt</groupId>
+                        <artifactId>detekt-cli</artifactId>
+                        <version>1.15.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+            </plugin>
+        </plugins>
+    </build>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+        </pluginRepository>
+    </pluginRepositories>
+</project>
