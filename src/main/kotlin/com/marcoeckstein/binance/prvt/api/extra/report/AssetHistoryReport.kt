@@ -73,6 +73,7 @@ data class AssetHistoryReport(
     ).sumOf { it }
 
     fun toReportString(): String = """
+        = History =
         Payment balance (Buy crypto balance): ${paymentBalance.toPlainString()}
         Trade balance: ${tradeBalance.toPlainString()}
         Distribution: ${distributionsTotal.toPlainString()}

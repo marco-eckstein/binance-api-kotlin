@@ -27,6 +27,7 @@ data class AssetQuantitiesReport(
     val net: BigDecimal = gross - (isolatedMarginBorrowed + isolatedMarginInterest)
 
     fun toReportString(): String = """
+        = Quantities =
         Spot free: ${spotFree.toPlainString()}
         Spot locked: ${spotLocked.toPlainString()}
         Isolated margin free: ${isolatedMarginFree.toPlainString()}
