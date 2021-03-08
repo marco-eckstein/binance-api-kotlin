@@ -42,7 +42,7 @@ internal object InstantAsEpochMilliSerializer : KSerializer<Instant> {
 
 internal object InstantAsDateSerializer : KSerializer<Instant> {
 
-    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor(InstantAsDateSerializer::class.simpleName!!, PrimitiveKind.STRING)
