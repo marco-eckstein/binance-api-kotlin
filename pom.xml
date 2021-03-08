@@ -33,7 +33,7 @@
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.4.21</kotlin.version>
+        <kotlin.version>1.4.31</kotlin.version>
         <kotlin.compiler.jvmTarget>11</kotlin.compiler.jvmTarget>
         <kotlin.serialization.version>1.1.0</kotlin.serialization.version>
         <kotlin.code.style>official</kotlin.code.style>
@@ -72,6 +72,11 @@
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-serialization-json</artifactId>
             <version>${kotlin.serialization.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.marcoeckstein</groupId>
+            <artifactId>kotlin-lib-jvm</artifactId>
+            <version>0.0.2</version>
         </dependency>
         <dependency>
             <groupId>com.jakewharton.retrofit</groupId>
@@ -240,6 +245,10 @@
         </plugins>
     </build>
     <repositories>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>

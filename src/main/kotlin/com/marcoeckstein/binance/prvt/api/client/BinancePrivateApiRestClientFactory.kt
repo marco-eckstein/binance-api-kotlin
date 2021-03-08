@@ -58,7 +58,10 @@ class BinancePrivateApiRestClientFactory private constructor(
             .client(client)
             .baseUrl(baseUrl)
             .addConverterFactory(
-                Json { ignoreUnknownKeys = true }.asConverterFactory(MediaType.get("application/json"))
+                Json {
+                    ignoreUnknownKeys = true
+                    encodeDefaults = true
+                }.asConverterFactory(MediaType.get("application/json"))
             )
             .build()
 

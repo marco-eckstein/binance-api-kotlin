@@ -3,7 +3,9 @@ package com.marcoeckstein.binance.prvt.api.extra.report
 import com.binance.api.client.BinanceApiClientFactory
 import com.marcoeckstein.binance.prvt.api.Config
 import com.marcoeckstein.binance.prvt.api.client.BinancePrivateApiRestClientFactory
-import com.marcoeckstein.binance.prvt.api.lib.jvm.equalsComparingTo
+import com.marcoeckstein.binance.prvt.api.extra.BinancePrivateApiFacade
+import com.marcoeckstein.klib.java.math.equalsComparing
+import com.marcoeckstein.klib.java.math.notEqualsComparing
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -18,7 +20,9 @@ class ReportGeneratorTests {
 
         private val reportGenerator = ReportGenerator(
             BinanceApiClientFactory.newInstance(config.apiKey, config.secret).newRestClient(),
-            BinancePrivateApiRestClientFactory.newInstance(config.curlAddressPosix).newRestClient(),
+            BinancePrivateApiFacade(
+                BinancePrivateApiRestClientFactory.newInstance(config.curlAddressPosix).newRestClient()
+            ),
         )
 
         @JvmStatic
@@ -43,20 +47,18 @@ class ReportGeneratorTests {
         val history = assetHistoryReports.getValue(asset)
         val diffGross = quantities.gross - history.gross
         val diffNet = quantities.net - history.net
-        if (
-            !(diffGross equalsComparingTo BigDecimal.ZERO && diffNet equalsComparingTo BigDecimal.ZERO)
-        ) {
+        if (diffGross notEqualsComparing BigDecimal.ZERO || diffNet notEqualsComparing BigDecimal.ZERO) {
             val message = "Reports for $asset are not consistent.\n\n" +
                 quantities.toReportString() + "\n\n" +
                 history.toReportString() + "\n\n" +
                 "= Summary =\n" + (
-                if (!(diffGross equalsComparingTo BigDecimal.ZERO)) """
+                if (!(diffGross equalsComparing BigDecimal.ZERO)) """
                     Quantity gross:  ${quantities.gross.toPlainString()}
                     History gross: ${history.gross.toPlainString()}
                     Diff gross (should be zero): ${diffGross.toPlainString()}
                 """.trimIndent() + "\n" else ""
                 ) + (
-                if (!(diffNet equalsComparingTo BigDecimal.ZERO)) """
+                if (!(diffNet equalsComparing BigDecimal.ZERO)) """
                     Quantity net:  ${quantities.net.toPlainString()}
                     History net: ${history.net.toPlainString()}
                     Diff net (should be zero): ${diffNet.toPlainString()}

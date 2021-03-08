@@ -8,7 +8,8 @@ package com.marcoeckstein.binance.prvt.api.client.account
 import com.binance.api.client.domain.OrderSide
 import com.marcoeckstein.binance.prvt.api.lib.jvm.BigDecimalAsPlainStringSerializer
 import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
-import com.marcoeckstein.binance.prvt.api.lib.jvm.equalsComparingTo
+import com.marcoeckstein.klib.java.math.equalsComparing
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import java.math.BigDecimal
@@ -18,7 +19,8 @@ import java.time.Instant
 data class Trade(
     val tradeId: Long,
     val price: BigDecimal,
-    val time: Instant,
+    @SerialName("time")
+    override val timestamp: Instant,
     val symbol: String,
     val side: OrderSide,
     val activeBuy: Boolean,
@@ -34,9 +36,9 @@ data class Trade(
     // public val realPnl: 0,
     // public val money: null,
     // public val email: null,
-) {
+) : Timestamped {
 
     init {
-        require((price * qty) equalsComparingTo totalQuota.stripTrailingZeros())
+        require((price * qty) equalsComparing totalQuota.stripTrailingZeros())
     }
 }

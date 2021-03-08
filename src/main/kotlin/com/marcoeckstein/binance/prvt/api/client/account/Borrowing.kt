@@ -1,11 +1,8 @@
 package com.marcoeckstein.binance.prvt.api.client.account
 
 import java.math.BigDecimal
-import java.time.Instant
 
-interface Borrowing {
-
-    val timestamp: Instant
+interface Borrowing : Timestamped {
 
     val txId: String
 

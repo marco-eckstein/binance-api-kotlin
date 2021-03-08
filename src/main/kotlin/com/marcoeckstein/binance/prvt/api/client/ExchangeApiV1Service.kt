@@ -2,13 +2,13 @@ package com.marcoeckstein.binance.prvt.api.client
 
 import com.marcoeckstein.binance.prvt.api.client.account.CrossMarginBorrowing
 import com.marcoeckstein.binance.prvt.api.client.account.CrossMarginRepayment
+import com.marcoeckstein.binance.prvt.api.client.account.CrossMarginTransfer
 import com.marcoeckstein.binance.prvt.api.client.account.IsolatedMarginBorrowing
 import com.marcoeckstein.binance.prvt.api.client.account.IsolatedMarginRepayment
 import com.marcoeckstein.binance.prvt.api.client.account.IsolatedMarginTransfer
 import com.marcoeckstein.binance.prvt.api.client.account.Order
 import com.marcoeckstein.binance.prvt.api.client.account.PaidInterest
 import com.marcoeckstein.binance.prvt.api.client.account.Trade
-import com.marcoeckstein.binance.prvt.api.client.account.Transfer
 import com.marcoeckstein.binance.prvt.api.client.account.request.OpenOrdersQuery
 import com.marcoeckstein.binance.prvt.api.client.account.request.OrderHistoryQuery
 import com.marcoeckstein.binance.prvt.api.client.account.request.TradeHistoryQuery
@@ -83,7 +83,7 @@ internal interface ExchangeApiV1Service {
         @Query("size") size: Int?,
         @Query("startTime") startTime: Long?,
         @Query("endTime") endTime: Long?,
-    ): Call<QueryResult1<Transfer>>
+    ): Call<QueryResult1<CrossMarginTransfer>>
 
     @GET("isolated-margin/transfer-history")
     fun getIsolatedMarginTransferHistory(

@@ -1,13 +1,10 @@
 package com.marcoeckstein.binance.prvt.api.client.account
 
 import java.math.BigDecimal
-import java.time.Instant
 
-interface PaidInterest {
+interface PaidInterest : Timestamped {
 
     val txId: String
-
-    val chargeEpoch: Instant
 
     val asset: String
 

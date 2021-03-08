@@ -1,12 +1,10 @@
 package com.marcoeckstein.binance.prvt.api.client.account
 
 import java.math.BigDecimal
-import java.time.Instant
 
-interface Transfer {
+interface Transfer : Timestamped {
 
     val uid: String
-    val timestamp: Instant
     val txId: String
     val asset: String
     val amount: BigDecimal

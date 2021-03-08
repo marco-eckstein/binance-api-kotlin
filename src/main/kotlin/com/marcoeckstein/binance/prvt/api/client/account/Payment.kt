@@ -7,6 +7,7 @@ package com.marcoeckstein.binance.prvt.api.client.account
 
 import com.marcoeckstein.binance.prvt.api.lib.jvm.BigDecimalAsPlainStringSerializer
 import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsDateSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import java.math.BigDecimal
@@ -43,10 +44,8 @@ data class Payment(
      */
     val payType: String,
     val rail: String,
-    /**
-     * Aka date
-     */
-    val createTime: Instant,
+    @SerialName("createTime")
+    override val timestamp: Instant,
     /**
      * Aka transaction id
      */
@@ -71,4 +70,4 @@ data class Payment(
     // val transferSource: null,
     // val transferStatus: null,
     // val errorCode: null,
-)
+) : Timestamped

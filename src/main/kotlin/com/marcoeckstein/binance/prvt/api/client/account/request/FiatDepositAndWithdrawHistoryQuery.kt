@@ -13,15 +13,26 @@ import java.time.Instant
 data class FiatDepositAndWithdrawHistoryQuery(
     val direction: WithdrawDirection,
     @SerialName("page")
-    override val pageIndex: Int,
+    override val pageIndex: Int = 1,
     /**
      * Max: 2000
      */
     @SerialName("rows")
-    override val pageSize: Int,
-    val beginTime: Instant? = null,
-    val finishTime: Instant? = null,
-) : PagingQuery<FiatDepositAndWithdrawHistoryQuery> {
+    override val pageSize: Int = 2000,
+    @SerialName("beginTime")
+    override val startTime: Instant? = null,
+    /**
+     * End time, inclusive
+     */
+    @SerialName("finishTime")
+    override val endTime: Instant? = null,
+) : PagingQuery<FiatDepositAndWithdrawHistoryQuery>,
+    PeriodQuery<FiatDepositAndWithdrawHistoryQuery> {
 
     override fun forNextPage() = copy(pageIndex = pageIndex + 1)
+
+    override val isEndTimeInclusive get() = true
+
+    override fun copyWith(startTime: Instant?, endTime: Instant?) =
+        copy(startTime = startTime, endTime = endTime)
 }

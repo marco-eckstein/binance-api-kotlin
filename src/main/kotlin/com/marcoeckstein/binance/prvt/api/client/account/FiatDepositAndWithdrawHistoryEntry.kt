@@ -7,6 +7,7 @@ package com.marcoeckstein.binance.prvt.api.client.account
 
 import com.marcoeckstein.binance.prvt.api.lib.jvm.BigDecimalAsPlainStringSerializer
 import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import java.math.BigDecimal
@@ -15,10 +16,8 @@ import java.time.Instant
 @Serializable
 data class FiatDepositAndWithdrawHistoryEntry(
     val txId: Long,
-    /**
-     * Aka date
-     */
-    val applyTime: Instant,
+    @SerialName("applyTime")
+    override val timestamp: Instant,
     val coin: String,
     /**
      * Aka order id
@@ -36,13 +35,11 @@ data class FiatDepositAndWithdrawHistoryEntry(
     val expectedAmount: BigDecimal?,
     val paymentMethod: String?,
     // More properties omitted
-) {
-
-    val calculatedExpectedAmount: BigDecimal =
-        transferAmount - transactionFee
+) : Timestamped {
 
     init {
         expectedAmount?.let {
+            val calculatedExpectedAmount: BigDecimal = transferAmount - transactionFee
             require(it == calculatedExpectedAmount) {
                 "Expected amount == $it !== calculated expected amount == $calculatedExpectedAmount"
             }

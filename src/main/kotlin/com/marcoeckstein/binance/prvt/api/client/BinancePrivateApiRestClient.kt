@@ -1,10 +1,10 @@
 package com.marcoeckstein.binance.prvt.api.client
 
-import com.google.common.collect.Range
 import com.marcoeckstein.binance.prvt.api.client.account.AccountType
 import com.marcoeckstein.binance.prvt.api.client.account.AssetBalance
 import com.marcoeckstein.binance.prvt.api.client.account.CrossMarginBorrowing
 import com.marcoeckstein.binance.prvt.api.client.account.CrossMarginRepayment
+import com.marcoeckstein.binance.prvt.api.client.account.CrossMarginTransfer
 import com.marcoeckstein.binance.prvt.api.client.account.Distribution
 import com.marcoeckstein.binance.prvt.api.client.account.FiatDepositAndWithdrawHistoryEntry
 import com.marcoeckstein.binance.prvt.api.client.account.IsolatedMarginAccountDetail
@@ -18,7 +18,6 @@ import com.marcoeckstein.binance.prvt.api.client.account.Order
 import com.marcoeckstein.binance.prvt.api.client.account.PaidInterest
 import com.marcoeckstein.binance.prvt.api.client.account.Payment
 import com.marcoeckstein.binance.prvt.api.client.account.Trade
-import com.marcoeckstein.binance.prvt.api.client.account.Transfer
 import com.marcoeckstein.binance.prvt.api.client.account.earn.FlexibleSavingsInterest
 import com.marcoeckstein.binance.prvt.api.client.account.earn.FlexibleSavingsPosition
 import com.marcoeckstein.binance.prvt.api.client.account.earn.LockedStakingInterest
@@ -29,6 +28,7 @@ import com.marcoeckstein.binance.prvt.api.client.account.request.AssetBalanceQue
 import com.marcoeckstein.binance.prvt.api.client.account.request.DistributionHistoryQuery
 import com.marcoeckstein.binance.prvt.api.client.account.request.FiatDepositAndWithdrawHistoryQuery
 import com.marcoeckstein.binance.prvt.api.client.account.request.HistoryQuery
+import com.marcoeckstein.binance.prvt.api.client.account.request.IsolatedMarginInterestHistoryQuery
 import com.marcoeckstein.binance.prvt.api.client.account.request.IsolatedMarginRebateHistoryQuery
 import com.marcoeckstein.binance.prvt.api.client.account.request.OpenOrdersQuery
 import com.marcoeckstein.binance.prvt.api.client.account.request.OrderHistoryQuery
@@ -79,7 +79,7 @@ class BinancePrivateApiRestClient internal constructor(
      *
      * @param pageSize Max: 50
      */
-    fun getFlexibleSavingsPositions(pageIndex: Int, pageSize: Int): List<FlexibleSavingsPosition> =
+    fun getFlexibleSavingsPositions(pageIndex: Int, pageSize: Int = 50): List<FlexibleSavingsPosition> =
         execute(gatewayApiV1Service.getFlexibleSavingsPositions(headers, pageIndex, pageSize))
 
     /**
@@ -90,7 +90,7 @@ class BinancePrivateApiRestClient internal constructor(
      *
      * @param pageSize Max: 200
      */
-    fun getLockedStakingPositions(pageIndex: Int, pageSize: Int): List<LockedStakingPosition> =
+    fun getLockedStakingPositions(pageIndex: Int, pageSize: Int = 200): List<LockedStakingPosition> =
         execute(gatewayApiV1Service.getLockedStakingPositions(headers, pageIndex, pageSize))
 
     fun getOpenOrders(accountType: AccountType): List<Order> =
@@ -203,7 +203,7 @@ class BinancePrivateApiRestClient internal constructor(
      * Web:
      * - [Margin Orders | Transfers | Cross](https://www.binance.com/en/my/orders/margin/transfer/margin)
      */
-    fun getCrossMarginTransferHistory(query: HistoryQuery): List<Transfer> =
+    fun getCrossMarginTransferHistory(query: HistoryQuery): List<CrossMarginTransfer> =
         execute(
             exchangeApiV1Service.getCrossMarginTransferHistory(
                 headers,
@@ -254,7 +254,9 @@ class BinancePrivateApiRestClient internal constructor(
      * Web:
      * - [Margin Orders | Interest | Isolated](https://www.binance.com/en/my/orders/margin/interest/isolated_margin)
      */
-    fun getIsolatedMarginInterestHistory(query: HistoryQuery): List<IsolatedMarginInterest> =
+    fun getIsolatedMarginInterestHistory(
+        query: IsolatedMarginInterestHistoryQuery
+    ): List<IsolatedMarginInterest> =
         execute(
             gatewayApiV1Service.getIsolatedMarginInterestHistory(
                 headers,
@@ -331,9 +333,7 @@ class BinancePrivateApiRestClient internal constructor(
                 query.startTime?.toEpochMilli(),
                 query.endTime?.toEpochMilli(),
             )
-        ).filter {
-            Range.closedOpen(query.startTime!!, query.endTime!!).contains(it.createTimestamp)
-        }
+        )
 
     /**
      * Get isolated margin rebate history (aka discount or returned fees history)

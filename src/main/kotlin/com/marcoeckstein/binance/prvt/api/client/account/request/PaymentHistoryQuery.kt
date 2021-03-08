@@ -6,13 +6,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PaymentHistoryQuery(
-    /**
-     * One-based page index
-     */
     @SerialName("page")
-    override val pageIndex: Int,
+    override val pageIndex: Int = 1,
+    /**
+     * Seems to be unlimited.
+     */
     @SerialName("limit")
-    override val pageSize: Int,
+    override val pageSize: Int = Int.MAX_VALUE,
     val type: PaymentType,
 ) : PagingQuery<PaymentHistoryQuery> {
 

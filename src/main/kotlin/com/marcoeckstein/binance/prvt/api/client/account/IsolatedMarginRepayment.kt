@@ -7,7 +7,7 @@ package com.marcoeckstein.binance.prvt.api.client.account
 
 import com.marcoeckstein.binance.prvt.api.lib.jvm.BigDecimalAsPlainStringSerializer
 import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
-import com.marcoeckstein.binance.prvt.api.lib.jvm.equalsComparingTo
+import com.marcoeckstein.klib.java.math.equalsComparing
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import java.math.BigDecimal
@@ -31,6 +31,6 @@ data class IsolatedMarginRepayment(
         require(amount >= BigDecimal.ZERO)
         require(principal >= BigDecimal.ZERO)
         require(interest >= BigDecimal.ZERO)
-        require(amount equalsComparingTo principal + interest)
+        require(amount equalsComparing principal + interest)
     }
 }

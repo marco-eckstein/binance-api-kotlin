@@ -11,20 +11,29 @@ import java.time.Instant
 @Serializable
 data class IsolatedMarginRebateHistoryQuery(
     @SerialName("current")
-    override val pageIndex: Int,
+    override val pageIndex: Int = 1,
     /**
      * Seems to be unlimited.
      */
     @SerialName("size")
-    override val pageSize: Int? = null,
+    override val pageSize: Int? = Int.MAX_VALUE,
     val asset: String? = null,
     val symbol: String? = null,
     override val startTime: Instant? = null,
+    /**
+     * End time, exclusive
+     */
     override val endTime: Instant? = null,
 ) : PagingQuery<IsolatedMarginRebateHistoryQuery>,
     PeriodQuery<IsolatedMarginRebateHistoryQuery> {
 
+    init {
+        requireValidPeriod()
+    }
+
     override fun forNextPage() = copy(pageIndex = pageIndex + 1)
+
+    override val isEndTimeInclusive get() = false
 
     override fun copyWith(startTime: Instant?, endTime: Instant?) =
         copy(startTime = startTime, endTime = endTime)

@@ -6,11 +6,11 @@
 package com.marcoeckstein.binance.prvt.api.client.account
 
 import com.binance.api.client.domain.OrderSide
-import com.binance.api.client.domain.OrderStatus
 import com.binance.api.client.domain.OrderType
 import com.marcoeckstein.binance.prvt.api.lib.jvm.BigDecimalAsPlainStringSerializer
 import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -38,7 +38,8 @@ data class Order(
     val type: OrderType,
     val side: OrderSide,
     val stopPrice: Double,
-    val time: Instant,
+    @SerialName("time")
+    override val timestamp: Instant,
     val updateTime: Instant?,
     val baseAsset: String,
     val quoteAsset: String,
@@ -56,7 +57,7 @@ data class Order(
     // timeInForce: null
     // public val email: null,
     // public val tradedVolume: 0
-) {
+) : Timestamped {
 
     internal object OrderStatusSerializer : KSerializer<OrderStatus> {
 

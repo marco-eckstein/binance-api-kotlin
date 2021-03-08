@@ -16,7 +16,7 @@ internal class QueryResult2<T : Any>(
     @Serializable
     class DataContainer<T>(
         val data: List<T>?,
-        val direction: Int,
+        val direction: Int? = null,
         val page: Int,
         val pages: Int,
         val rows: Int,

@@ -1,36 +1,24 @@
 package com.marcoeckstein.binance.prvt.api.extra.report
 
 import com.binance.api.client.BinanceApiRestClient
-import com.marcoeckstein.binance.prvt.api.client.BinancePrivateApiRestClient
+import com.marcoeckstein.binance.prvt.api.extra.BinancePrivateApiFacade
 import com.marcoeckstein.binance.prvt.api.extra.extensions.assets
 import com.marcoeckstein.binance.prvt.api.extra.extensions.getAllAssetsNames
-import com.marcoeckstein.binance.prvt.api.extra.extensions.getDistributionHistory
-import com.marcoeckstein.binance.prvt.api.extra.extensions.getFlexibleSavingsInterestHistory
-import com.marcoeckstein.binance.prvt.api.extra.extensions.getFlexibleSavingsPositions
-import com.marcoeckstein.binance.prvt.api.extra.extensions.getIsolatedMarginBorrowingHistory
-import com.marcoeckstein.binance.prvt.api.extra.extensions.getIsolatedMarginInterestHistory
-import com.marcoeckstein.binance.prvt.api.extra.extensions.getIsolatedMarginRebateHistory
-import com.marcoeckstein.binance.prvt.api.extra.extensions.getIsolatedMarginRepaymentHistory
-import com.marcoeckstein.binance.prvt.api.extra.extensions.getLockedStakingInterestHistory
-import com.marcoeckstein.binance.prvt.api.extra.extensions.getLockedStakingPositions
-import com.marcoeckstein.binance.prvt.api.extra.extensions.getPaymentHistory
-import com.marcoeckstein.binance.prvt.api.extra.extensions.getSpotAccountBalances
-import com.marcoeckstein.binance.prvt.api.extra.extensions.getTradeHistory
 import java.math.BigDecimal
 import java.time.Instant
 
 class ReportGenerator(
-    private val publicClient: BinanceApiRestClient,
-    private val privateClient: BinancePrivateApiRestClient,
+    private val publicApi: BinanceApiRestClient,
+    private val privateApi: BinancePrivateApiFacade,
 ) {
 
     fun getAssetQuantitiesReports(): Map<String, AssetQuantitiesReport> {
-        val spotBalances = privateClient.getSpotAccountBalances()
-        val isolatedMarginDetails = privateClient.getIsolatedMarginAccountDetails()
-        val flexibleSavingsPositions = privateClient.getFlexibleSavingsPositions()
-        val lockedStakingPositions = privateClient.getLockedStakingPositions()
+        val spotBalances = privateApi.getSpotAccountBalances()
+        val isolatedMarginDetails = privateApi.getIsolatedMarginAccountDetails()
+        val flexibleSavingsPositions = privateApi.getFlexibleSavingsPositions()
+        val lockedStakingPositions = privateApi.getLockedStakingPositions()
 
-        return publicClient.getAllAssetsNames().map { asset ->
+        return publicApi.getAllAssetsNames().map { asset ->
             asset to AssetQuantitiesReport(
                 asset = asset,
                 spotFree = spotBalances.singleOrNull { it.asset == asset }?.free ?: BigDecimal.ZERO,
@@ -54,16 +42,16 @@ class ReportGenerator(
     }
 
     fun getAssetHistoryReport(start: Instant): Map<String, AssetHistoryReport> {
-        val payments = privateClient.getPaymentHistory()
-        val trades = privateClient.getTradeHistory(start)
-        val distributions = privateClient.getDistributionHistory(start)
-        val flexibleSavingsInterests = privateClient.getFlexibleSavingsInterestHistory(start)
-        val lockedStakingInterests = privateClient.getLockedStakingInterestHistory(start)
-        val isolatedMarginBorrowings = privateClient.getIsolatedMarginBorrowingHistory(start)
-        val isolatedMarginRepayments = privateClient.getIsolatedMarginRepaymentHistory(start)
-        val isolatedMarginInterests = privateClient.getIsolatedMarginInterestHistory(start)
-        val isolatedMarginRebates = privateClient.getIsolatedMarginRebateHistory(start)
-        return publicClient.getAllAssetsNames().map { asset ->
+        val payments = privateApi.getPaymentHistory()
+        val trades = privateApi.getTradeHistory(start)
+        val distributions = privateApi.getDistributionHistory(start)
+        val flexibleSavingsInterests = privateApi.getFlexibleSavingsInterestHistory(start)
+        val lockedStakingInterests = privateApi.getLockedStakingInterestHistory(start)
+        val isolatedMarginBorrowings = privateApi.getIsolatedMarginBorrowingHistory(start)
+        val isolatedMarginRepayments = privateApi.getIsolatedMarginRepaymentHistory(start)
+        val isolatedMarginInterests = privateApi.getIsolatedMarginInterestHistory(start)
+        val isolatedMarginRebates = privateApi.getIsolatedMarginRebateHistory(start)
+        return publicApi.getAllAssetsNames().map { asset ->
             asset to AssetHistoryReport(
                 asset = asset,
                 payments = payments.filter { it.cryptoCurrency == asset },
