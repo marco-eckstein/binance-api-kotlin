@@ -32,7 +32,7 @@ class ReportGeneratorTests {
 
         @JvmStatic
         val assetHistoryReports: Map<String, AssetHistoryReport> by lazy {
-            reportGenerator.getAssetHistoryReport(config.accountStartTime)
+            reportGenerator.getAssetHistoryReports(config.accountStartTime)
         }
 
         @JvmStatic

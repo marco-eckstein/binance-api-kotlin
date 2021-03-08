@@ -41,7 +41,7 @@ class ReportGenerator(
         }.toMap()
     }
 
-    fun getAssetHistoryReport(start: Instant): Map<String, AssetHistoryReport> {
+    fun getAssetHistoryReports(start: Instant): Map<String, AssetHistoryReport> {
         val payments = privateApi.getPaymentHistory()
         val trades = privateApi.getTradeHistory(start)
         val distributions = privateApi.getDistributionHistory(start)
