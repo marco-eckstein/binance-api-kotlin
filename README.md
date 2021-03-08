@@ -73,7 +73,7 @@ Binance website, which is cookies. You need to obtain them in the following way:
 #### Important
 
 Note that the string you have just copied has all the confidential information that is needed to perform most
-actions in you Binance account until the session expires, including trading.
+actions in your Binance account until the session expires, including trading.
 Therefore, you must treat it with about the same care as a password or the official public API's key and secret!
 You can easily verify that my code does nothing malicious or risky with your data.
 Also, given my GitHub account, it is easy to find out my identity.
