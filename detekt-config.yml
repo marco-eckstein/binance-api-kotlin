@@ -4,9 +4,9 @@ complexity:
   LongParameterList:
     constructorThreshold: 12
   TooManyFunctions:
-    thresholdInFiles: 30
-    thresholdInClasses: 30
-    thresholdInInterfaces: 30
+    thresholdInFiles: 40
+    thresholdInClasses: 40
+    thresholdInInterfaces: 40
     ignoreOverridden: true
 naming:
   ConstructorParameterNaming:
@@ -26,6 +26,8 @@ style:
     active: false
   MaxLineLength:
     active: false
+  ReturnCount:
+    max: 3
   UnnecessaryAbstractClass:
     active: false
   UseIfInsteadOfWhen:
