@@ -40,12 +40,12 @@ internal object InstantAsEpochMilliSerializer : KSerializer<Instant> {
         Instant.ofEpochMilli(decoder.decodeLong())
 }
 
-internal object InstantAsDateSerializer : KSerializer<Instant> {
-
-    private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+internal abstract class InstantAsDateSerializerBase(
+    private val formatter: DateTimeFormatter
+) : KSerializer<Instant> {
 
     override val descriptor: SerialDescriptor =
-        PrimitiveSerialDescriptor(InstantAsDateSerializer::class.simpleName!!, PrimitiveKind.STRING)
+        PrimitiveSerialDescriptor(javaClass.simpleName, PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: Instant) {
         encoder.encodeString(
