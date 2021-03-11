@@ -9,6 +9,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 @Serializable
 data class OrderHistoryQuery(
@@ -41,8 +42,14 @@ data class OrderHistoryQuery(
 
     override fun forNextPage() = copy(pageIndex = pageIndex + 1)
 
-    override val isEndTimeInclusive get() = false
-
     override fun copyWith(startTime: Instant?, endTime: Instant?) =
         copy(startTime = startTime, endTime = endTime)
+
+    override val periodInfo get() = Companion
+
+    companion object : PeriodQuery.PeriodInfo {
+
+        override val isEndTimeInclusive = false
+        override val timestampResolution = ChronoUnit.MILLIS
+    }
 }

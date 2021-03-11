@@ -15,9 +15,7 @@ interface PeriodQuery<T : PeriodQuery<T>> {
      */
     val endTime: Instant?
 
-    val isEndTimeInclusive: Boolean
-
-    val timestampResolution: ChronoUnit get() = ChronoUnit.MILLIS
+    val periodInfo: PeriodInfo
 
     fun copyWith(startTime: Instant?, endTime: Instant?): T
 
@@ -30,7 +28,7 @@ interface PeriodQuery<T : PeriodQuery<T>> {
             copyWith(
                 startTime = range.lowerEndpoint(),
                 endTime = range.upperEndpoint().let {
-                    if (isEndTimeInclusive) it.minus(1, timestampResolution) else it
+                    if (periodInfo.isEndTimeInclusive) it.minus(1, periodInfo.timestampResolution) else it
                 }
             )
         }
@@ -42,12 +40,18 @@ interface PeriodQuery<T : PeriodQuery<T>> {
         // We choose a value that is a little lower for safety.
         val maxIntervalDuration: Duration = Duration.ofDays(85)
     }
+
+    interface PeriodInfo {
+
+        val isEndTimeInclusive: Boolean
+        val timestampResolution: ChronoUnit
+    }
 }
 
 internal fun PeriodQuery<*>.requireValidPeriod() {
     startTime?.also {
-        require(it == it.truncatedTo(timestampResolution)) {
-            "startTime must have resolution $timestampResolution, but was$it."
+        require(it == it.truncatedTo(periodInfo.timestampResolution)) {
+            "startTime must have resolution $periodInfo.timestampResolution, but was$it."
         }
         endTime?.let { end ->
             require(it <= end) {
@@ -56,7 +60,7 @@ internal fun PeriodQuery<*>.requireValidPeriod() {
         }
     }
     endTime?.also {
-        val resolution = timestampResolution
+        val resolution = periodInfo.timestampResolution
         require(it == it.truncatedTo(resolution)) {
             "endTime must have resolution $resolution, but was $it."
         }

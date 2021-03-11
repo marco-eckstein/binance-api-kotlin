@@ -31,10 +31,14 @@ data class IsolatedMarginInterestHistoryQuery(
 
     override fun forNextPage() = copy(pageIndex = pageIndex + 1)
 
-    override val isEndTimeInclusive get() = true
-
-    override val timestampResolution: ChronoUnit get() = ChronoUnit.SECONDS
-
     override fun copyWith(startTime: Instant?, endTime: Instant?) =
         copy(startTime = startTime, endTime = endTime)
+
+    override val periodInfo get() = Companion
+
+    companion object : PeriodQuery.PeriodInfo {
+
+        override val isEndTimeInclusive = true
+        override val timestampResolution = ChronoUnit.SECONDS
+    }
 }

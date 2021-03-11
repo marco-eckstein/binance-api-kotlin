@@ -171,7 +171,7 @@ class BinancePrivateApiFacadePeriodTests {
     ) {
         val offsetMillis = if (allowOffset) findOffsetMillis(query, item, call) else 0
         val time = item.timestamp.plusMillis(offsetMillis)
-        val resolution = query.timestampResolution
+        val resolution = query.periodInfo.timestampResolution
         time shouldBe time.truncatedTo(resolution)
         call(
             query.copyWith(startTime = time, endTime = time.plus(1, resolution))
@@ -183,7 +183,7 @@ class BinancePrivateApiFacadePeriodTests {
             query.copyWith(startTime = time.plus(1, resolution), endTime = time.plus(1, resolution))
         ) shouldNotContain item
         call(query.copyWith(startTime = time, endTime = time)).also {
-            if (query.isEndTimeInclusive) it shouldContain item else it shouldNotContain item
+            if (query.periodInfo.isEndTimeInclusive) it shouldContain item else it shouldNotContain item
         }
     }
 
