@@ -1,9 +1,8 @@
 package com.marcoeckstein.binance.prvt.api.extra.report
 
-import com.binance.api.client.BinanceApiClientFactory
 import com.marcoeckstein.binance.prvt.api.Config
-import com.marcoeckstein.binance.prvt.api.client.BinancePrivateApiRestClientFactory
-import com.marcoeckstein.binance.prvt.api.extra.BinancePrivateApiFacade
+import com.marcoeckstein.binance.prvt.api.privateApi
+import com.marcoeckstein.binance.prvt.api.publicApi
 import com.marcoeckstein.klib.java.math.equalsComparing
 import com.marcoeckstein.klib.java.math.notEqualsComparing
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -18,12 +17,7 @@ class ReportGeneratorTests {
 
         private val config = Config()
 
-        private val reportGenerator = ReportGenerator(
-            BinanceApiClientFactory.newInstance(config.apiKey, config.secret).newRestClient(),
-            BinancePrivateApiFacade(
-                BinancePrivateApiRestClientFactory.newInstance(config.curlAddressPosix).newRestClient()
-            ),
-        )
+        private val reportGenerator = ReportGenerator(publicApi, privateApi)
 
         @JvmStatic
         val assetQuantitiesReports: Map<String, AssetQuantitiesReport> by lazy {
