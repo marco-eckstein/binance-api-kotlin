@@ -3,6 +3,7 @@
 package com.marcoeckstein.binance.prvt.api.client.account.earn.request
 
 import com.google.common.collect.BoundType
+import com.google.common.collect.Range
 import com.marcoeckstein.binance.prvt.api.client.account.earn.LendingType
 import com.marcoeckstein.binance.prvt.api.client.account.request.PagingQuery
 import com.marcoeckstein.binance.prvt.api.client.account.request.PeriodQuery
@@ -29,6 +30,21 @@ data class FlexibleSavingsInterestHistoryQuery(
     override val endTime: Instant? = null,
 ) : PagingQuery<FlexibleSavingsInterestHistoryQuery>,
     PeriodQuery<FlexibleSavingsInterestHistoryQuery> {
+
+    constructor(
+        pageIndex: Int = 1,
+        pageSize: Int? = Int.MAX_VALUE,
+        asset: String? = null,
+        lendingType: LendingType? = null,
+        timeRange: Range<Instant>,
+    ) : this(
+        pageIndex,
+        pageSize,
+        asset,
+        lendingType,
+        startTime = calculateEndTime(timeRange),
+        endTime = calculateEndTime(timeRange),
+    )
 
     init {
         requireValidPeriod()

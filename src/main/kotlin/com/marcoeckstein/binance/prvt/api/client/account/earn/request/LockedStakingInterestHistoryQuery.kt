@@ -3,6 +3,7 @@
 package com.marcoeckstein.binance.prvt.api.client.account.earn.request
 
 import com.google.common.collect.BoundType
+import com.google.common.collect.Range
 import com.marcoeckstein.binance.prvt.api.client.account.request.PagingQuery
 import com.marcoeckstein.binance.prvt.api.client.account.request.PeriodQuery
 import com.marcoeckstein.binance.prvt.api.client.account.request.requireValidPeriod
@@ -27,6 +28,19 @@ data class LockedStakingInterestHistoryQuery(
     override val endTime: Instant? = null,
 ) : PagingQuery<LockedStakingInterestHistoryQuery>,
     PeriodQuery<LockedStakingInterestHistoryQuery> {
+
+    constructor(
+        pageIndex: Int = 1,
+        pageSize: Int? = 100,
+        asset: String? = null,
+        timeRange: Range<Instant>,
+    ) : this(
+        pageIndex,
+        pageSize,
+        asset,
+        startTime = calculateEndTime(timeRange),
+        endTime = calculateEndTime(timeRange),
+    )
 
     init {
         requireValidPeriod()

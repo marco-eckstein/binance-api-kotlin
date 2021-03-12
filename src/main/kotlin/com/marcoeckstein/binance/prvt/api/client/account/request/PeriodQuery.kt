@@ -49,6 +49,19 @@ interface PeriodQuery<T : PeriodQuery<T>> {
 
         val endTimeType: BoundType
         val timestampResolution: ChronoUnit
+
+        fun calculateStartTime(range: Range<Instant>): Instant =
+            range.lowerEndpoint().let {
+                if (range.upperBoundType() == BoundType.CLOSED) it else it.plus(1, timestampResolution)
+            }
+
+        fun calculateEndTime(range: Range<Instant>): Instant =
+            range.upperEndpoint().let {
+                if (endTimeType == BoundType.CLOSED)
+                    if (range.upperBoundType() == BoundType.CLOSED) it else it.minus(1, timestampResolution)
+                else
+                    if (range.upperBoundType() == BoundType.OPEN) it else it.plus(1, timestampResolution)
+            }
     }
 }
 

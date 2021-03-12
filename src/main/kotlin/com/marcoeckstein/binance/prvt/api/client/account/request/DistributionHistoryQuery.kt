@@ -3,6 +3,7 @@
 package com.marcoeckstein.binance.prvt.api.client.account.request
 
 import com.google.common.collect.BoundType
+import com.google.common.collect.Range
 import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -27,6 +28,19 @@ data class DistributionHistoryQuery(
     override val endTime: Instant? = null,
 ) : PagingQuery<DistributionHistoryQuery>,
     PeriodQuery<DistributionHistoryQuery> {
+
+    constructor(
+        pageIndex: Int = 1,
+        pageSize: Int = 2000,
+        asset: String? = null,
+        timeRange: Range<Instant>,
+    ) : this(
+        pageIndex,
+        pageSize,
+        asset,
+        startTime = calculateEndTime(timeRange),
+        endTime = calculateEndTime(timeRange)
+    )
 
     init {
         requireValidPeriod()

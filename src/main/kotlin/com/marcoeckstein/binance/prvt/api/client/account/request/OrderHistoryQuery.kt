@@ -4,6 +4,7 @@ package com.marcoeckstein.binance.prvt.api.client.account.request
 
 import com.binance.api.client.domain.OrderSide
 import com.google.common.collect.BoundType
+import com.google.common.collect.Range
 import com.marcoeckstein.binance.prvt.api.client.account.AccountType
 import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
 import kotlinx.serialization.SerialName
@@ -36,6 +37,29 @@ data class OrderHistoryQuery(
     val direction: OrderSide? = null,
     val hideCancel: Boolean,
 ) : PagingQuery<OrderHistoryQuery>, PeriodQuery<OrderHistoryQuery> {
+
+    constructor(
+        pageIndex: Int = 1,
+        pageSize: Int = 2000,
+        accountType: AccountType,
+        timeRange: Range<Instant>,
+        baseAsset: String? = null,
+        quoteAsset: String? = null,
+        symbol: String? = null,
+        direction: OrderSide? = null,
+        hideCancel: Boolean,
+    ) : this(
+        pageIndex,
+        pageSize,
+        accountType,
+        startTime = calculateEndTime(timeRange),
+        endTime = calculateEndTime(timeRange),
+        baseAsset,
+        quoteAsset,
+        symbol,
+        direction,
+        hideCancel,
+    )
 
     init {
         requireValidPeriod()

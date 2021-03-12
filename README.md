@@ -131,6 +131,13 @@ of them, especially if you want to understand the source code.
             inclusive or exclusive.
           </li>
           <li>
+            Additionally, there are query constructor overloads that take a
+            <a href="https://guava.dev/releases/19.0/api/docs/com/google/common/collect/Range.html">
+              <code>Range&lt;Instant&gt;</code>
+            </a>
+            as parameter that will be translated to <code>startTime</code> and <code>endTime</code>.
+          </li>
+          <li>
             When <code>BinancePrivateApiFacade</code> transparently handles time interval splitting,
             inclusiveness/exclusiveness is respected.
           </li>

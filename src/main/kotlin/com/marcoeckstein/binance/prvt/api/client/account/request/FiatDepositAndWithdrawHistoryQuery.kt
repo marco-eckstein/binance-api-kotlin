@@ -3,6 +3,7 @@
 package com.marcoeckstein.binance.prvt.api.client.account.request
 
 import com.google.common.collect.BoundType
+import com.google.common.collect.Range
 import com.marcoeckstein.binance.prvt.api.client.account.WithdrawDirection
 import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
 import kotlinx.serialization.SerialName
@@ -30,6 +31,19 @@ data class FiatDepositAndWithdrawHistoryQuery(
     override val endTime: Instant? = null,
 ) : PagingQuery<FiatDepositAndWithdrawHistoryQuery>,
     PeriodQuery<FiatDepositAndWithdrawHistoryQuery> {
+
+    constructor(
+        direction: WithdrawDirection,
+        pageIndex: Int = 1,
+        pageSize: Int = 2000,
+        timeRange: Range<Instant>,
+    ) : this(
+        direction,
+        pageIndex = pageIndex,
+        pageSize = pageSize,
+        startTime = calculateEndTime(timeRange),
+        endTime = calculateEndTime(timeRange)
+    )
 
     override fun forNextPage() = copy(pageIndex = pageIndex + 1)
 
