@@ -14,5 +14,6 @@ val publicApi: BinanceApiRestClient =
 @ExperimentalSerializationApi
 val privateApi =
     BinancePrivateApiFacade(
-        BinancePrivateApiRestClientFactory.newInstance(config.curlAddressPosix).newRestClient()
+        BinancePrivateApiRestClientFactory.newInstance(config.curlAddressPosix).newRestClient(),
+        config.accountStartTime
     )

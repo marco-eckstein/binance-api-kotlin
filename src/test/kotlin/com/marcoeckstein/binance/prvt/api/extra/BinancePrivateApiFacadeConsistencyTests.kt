@@ -6,7 +6,6 @@ import com.marcoeckstein.binance.prvt.api.client.account.IsolatedMarginAccountDe
 import com.marcoeckstein.binance.prvt.api.client.account.IsolatedMarginAccountPosition
 import com.marcoeckstein.binance.prvt.api.client.account.Order
 import com.marcoeckstein.binance.prvt.api.client.account.Trade
-import com.marcoeckstein.binance.prvt.api.config
 import com.marcoeckstein.binance.prvt.api.extra.extensions.assets
 import com.marcoeckstein.binance.prvt.api.extra.extensions.getAllAssetsNames
 import com.marcoeckstein.binance.prvt.api.extra.extensions.lockedAmount
@@ -50,7 +49,7 @@ class BinancePrivateApiFacadeConsistencyTests {
             privateApi.getOpenOrders(AccountType.ISOLATED_MARGIN)
         }
 
-        val trades: List<Trade> by lazy { privateApi.getTradeHistory(config.accountStartTime) }
+        val trades: List<Trade> by lazy { privateApi.getTradeHistory() }
     }
 
     @ParameterizedTest

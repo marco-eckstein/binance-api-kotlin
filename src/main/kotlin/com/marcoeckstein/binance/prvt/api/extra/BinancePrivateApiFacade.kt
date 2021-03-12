@@ -1,5 +1,6 @@
 package com.marcoeckstein.binance.prvt.api.extra
 
+import com.google.common.collect.Range
 import com.marcoeckstein.binance.prvt.api.client.BinancePrivateApiRestClient
 import com.marcoeckstein.binance.prvt.api.client.account.AccountType
 import com.marcoeckstein.binance.prvt.api.client.account.AssetBalance
@@ -38,7 +39,8 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 class BinancePrivateApiFacade(
-    private val client: BinancePrivateApiRestClient
+    private val client: BinancePrivateApiRestClient,
+    private val defaultStartTime: Instant,
 ) {
 
     fun getSpotAccountBalances(): List<AssetBalance> =
@@ -67,14 +69,15 @@ class BinancePrivateApiFacade(
         client.getOpenOrders(query)
 
     fun getFiatDepositAndWithdrawHistory(
-        startTime: Instant,
         direction: WithdrawDirection
+    ): List<FiatDepositAndWithdrawHistoryEntry> =
+        getFiatDepositAndWithdrawHistory(direction, defaultTimeRange)
+
+    fun getFiatDepositAndWithdrawHistory(
+        direction: WithdrawDirection,
+        timeRange: Range<Instant>
     ): List<FiatDepositAndWithdrawHistoryEntry> {
-        val query = FiatDepositAndWithdrawHistoryQuery(
-            direction = direction,
-            startTime = startTime,
-            endTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-        )
+        val query = FiatDepositAndWithdrawHistoryQuery(direction, timeRange = timeRange)
         return executeWithPaging(query.splitPeriod(), client::getFiatDepositAndWithdrawHistory)
     }
 
@@ -103,14 +106,19 @@ class BinancePrivateApiFacade(
     }
 
     fun getOrderHistory(
-        startTime: Instant,
+        accountTypes: Set<AccountType> =
+            setOf(AccountType.SPOT, AccountType.CROSS_MARGIN, AccountType.ISOLATED_MARGIN)
+    ): List<Order> =
+        getOrderHistory(defaultTimeRange, accountTypes)
+
+    fun getOrderHistory(
+        timeRange: Range<Instant>,
         accountTypes: Set<AccountType> =
             setOf(AccountType.SPOT, AccountType.CROSS_MARGIN, AccountType.ISOLATED_MARGIN)
     ): List<Order> {
         val query = OrderHistoryQuery(
             accountType = AccountType.SPOT,
-            startTime = startTime,
-            endTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+            timeRange = timeRange,
             hideCancel = false
         )
         val queries = accountTypes.map { query.copy(accountType = it) }.flatMap { it.splitPeriod() }
@@ -121,14 +129,19 @@ class BinancePrivateApiFacade(
         executeWithPaging(query, client::getOrderHistory)
 
     fun getTradeHistory(
-        startTime: Instant,
+        accountTypes: Set<AccountType> =
+            setOf(AccountType.SPOT, AccountType.CROSS_MARGIN, AccountType.ISOLATED_MARGIN)
+    ): List<Trade> =
+        getTradeHistory(defaultTimeRange, accountTypes)
+
+    fun getTradeHistory(
+        timeRange: Range<Instant>,
         accountTypes: Set<AccountType> =
             setOf(AccountType.SPOT, AccountType.CROSS_MARGIN, AccountType.ISOLATED_MARGIN)
     ): List<Trade> {
         val query = TradeHistoryQuery(
             accountType = AccountType.SPOT,
-            startTime = startTime,
-            endTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+            timeRange = timeRange
         )
         val queries = accountTypes.map { query.copy(accountType = it) }.flatMap { it.splitPeriod() }
         return executeWithPaging(queries, client::getTradeHistory)
@@ -137,22 +150,22 @@ class BinancePrivateApiFacade(
     fun getTradeHistory(query: TradeHistoryQuery): List<Trade> =
         executeWithPaging(query, client::getTradeHistory)
 
-    fun getDistributionHistory(startTime: Instant): List<Distribution> {
-        val query = DistributionHistoryQuery(
-            startTime = startTime,
-            endTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-        )
+    fun getDistributionHistory(): List<Distribution> =
+        getDistributionHistory(defaultTimeRange)
+
+    fun getDistributionHistory(timeRange: Range<Instant>): List<Distribution> {
+        val query = DistributionHistoryQuery(timeRange = timeRange)
         return executeWithPaging(query.splitPeriod(), client::getDistributionHistory)
     }
 
     fun getDistributionHistory(query: DistributionHistoryQuery): List<Distribution> =
         executeWithPaging(query, client::getDistributionHistory)
 
-    fun getFlexibleSavingsInterestHistory(startTime: Instant): List<FlexibleSavingsInterest> {
-        val query = FlexibleSavingsInterestHistoryQuery(
-            startTime = startTime,
-            endTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-        )
+    fun getFlexibleSavingsInterestHistory(): List<FlexibleSavingsInterest> =
+        getFlexibleSavingsInterestHistory(defaultTimeRange)
+
+    fun getFlexibleSavingsInterestHistory(timeRange: Range<Instant>): List<FlexibleSavingsInterest> {
+        val query = FlexibleSavingsInterestHistoryQuery(timeRange = timeRange)
         return executeWithPaging(query.splitPeriod(), client::getFlexibleSavingsInterestHistory)
     }
 
@@ -161,55 +174,55 @@ class BinancePrivateApiFacade(
     ): List<FlexibleSavingsInterest> =
         executeWithPaging(query, client::getFlexibleSavingsInterestHistory)
 
-    fun getLockedStakingInterestHistory(startTime: Instant): List<LockedStakingInterest> {
-        val query = LockedStakingInterestHistoryQuery(
-            startTime = startTime,
-            endTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-        )
+    fun getLockedStakingInterestHistory(): List<LockedStakingInterest> =
+        getLockedStakingInterestHistory(defaultTimeRange)
+
+    fun getLockedStakingInterestHistory(timeRange: Range<Instant>): List<LockedStakingInterest> {
+        val query = LockedStakingInterestHistoryQuery(timeRange = timeRange)
         return executeWithPaging(query.splitPeriod(), client::getLockedStakingInterestHistory)
     }
 
     fun getLockedStakingInterestHistory(query: LockedStakingInterestHistoryQuery): List<LockedStakingInterest> =
         executeWithPaging(query, client::getLockedStakingInterestHistory)
 
-    fun getIsolatedMarginBorrowingHistory(startTime: Instant): List<IsolatedMarginBorrowing> {
-        val query = HistoryQuery(
-            startTime = startTime,
-            endTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-        )
+    fun getIsolatedMarginBorrowingHistory(): List<IsolatedMarginBorrowing> =
+        getIsolatedMarginBorrowingHistory(defaultTimeRange)
+
+    fun getIsolatedMarginBorrowingHistory(timeRange: Range<Instant>): List<IsolatedMarginBorrowing> {
+        val query = HistoryQuery(timeRange = timeRange)
         return executeWithPaging(query.splitPeriod(), client::getIsolatedMarginBorrowingHistory)
     }
 
     fun getIsolatedMarginBorrowingHistory(query: HistoryQuery): List<IsolatedMarginBorrowing> =
         executeWithPaging(query, client::getIsolatedMarginBorrowingHistory)
 
-    fun getIsolatedMarginRepaymentHistory(startTime: Instant): List<IsolatedMarginRepayment> {
-        val query = HistoryQuery(
-            startTime = startTime,
-            endTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-        )
+    fun getIsolatedMarginRepaymentHistory(): List<IsolatedMarginRepayment> =
+        getIsolatedMarginRepaymentHistory(defaultTimeRange)
+
+    fun getIsolatedMarginRepaymentHistory(timeRange: Range<Instant>): List<IsolatedMarginRepayment> {
+        val query = HistoryQuery(timeRange = timeRange)
         return executeWithPaging(query.splitPeriod(), client::getIsolatedMarginRepaymentHistory)
     }
 
     fun getIsolatedMarginRepaymentHistory(query: HistoryQuery): List<IsolatedMarginRepayment> =
         executeWithPaging(query, client::getIsolatedMarginRepaymentHistory)
 
-    fun getIsolatedMarginTransferHistory(startTime: Instant): List<IsolatedMarginTransfer> {
-        val query = HistoryQuery(
-            startTime = startTime,
-            endTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-        )
+    fun getIsolatedMarginTransferHistory(): List<IsolatedMarginTransfer> =
+        getIsolatedMarginTransferHistory(defaultTimeRange)
+
+    fun getIsolatedMarginTransferHistory(timeRange: Range<Instant>): List<IsolatedMarginTransfer> {
+        val query = HistoryQuery(timeRange = timeRange)
         return executeWithPaging(query.splitPeriod(), client::getIsolatedMarginTransferHistory)
     }
 
     fun getIsolatedMarginTransferHistory(query: HistoryQuery): List<IsolatedMarginTransfer> =
         executeWithPaging(query, client::getIsolatedMarginTransferHistory)
 
-    fun getIsolatedMarginInterestHistory(startTime: Instant): List<IsolatedMarginInterest> {
-        val query = IsolatedMarginInterestHistoryQuery(
-            startTime = startTime,
-            endTime = Instant.now().truncatedTo(ChronoUnit.SECONDS),
-        )
+    fun getIsolatedMarginInterestHistory(): List<IsolatedMarginInterest> =
+        getIsolatedMarginInterestHistory(defaultTimeRange)
+
+    fun getIsolatedMarginInterestHistory(timeRange: Range<Instant>): List<IsolatedMarginInterest> {
+        val query = IsolatedMarginInterestHistoryQuery(timeRange = timeRange)
         return executeWithPaging(query.splitPeriod(), client::getIsolatedMarginInterestHistory)
     }
 
@@ -218,14 +231,17 @@ class BinancePrivateApiFacade(
     ): List<IsolatedMarginInterest> =
         executeWithPaging(query, client::getIsolatedMarginInterestHistory)
 
-    fun getIsolatedMarginRebateHistory(startTime: Instant): List<IsolatedMarginRebate> {
-        val query = IsolatedMarginRebateHistoryQuery(
-            startTime = startTime,
-            endTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-        )
+    fun getIsolatedMarginRebateHistory(): List<IsolatedMarginRebate> =
+        getIsolatedMarginRebateHistory(defaultTimeRange)
+
+    fun getIsolatedMarginRebateHistory(timeRange: Range<Instant>): List<IsolatedMarginRebate> {
+        val query = IsolatedMarginRebateHistoryQuery(timeRange = timeRange)
         return executeWithPaging(query.splitPeriod(), client::getIsolatedMarginRebateHistory)
     }
 
     fun getIsolatedMarginRebateHistory(query: IsolatedMarginRebateHistoryQuery): List<IsolatedMarginRebate> =
         executeWithPaging(query, client::getIsolatedMarginRebateHistory)
+
+    private val defaultTimeRange: Range<Instant>
+        get() = Range.closedOpen(defaultStartTime, Instant.now().truncatedTo(ChronoUnit.SECONDS))
 }

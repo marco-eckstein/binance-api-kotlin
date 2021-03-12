@@ -5,7 +5,6 @@ import com.marcoeckstein.binance.prvt.api.extra.BinancePrivateApiFacade
 import com.marcoeckstein.binance.prvt.api.extra.extensions.assets
 import com.marcoeckstein.binance.prvt.api.extra.extensions.getAllAssetsNames
 import java.math.BigDecimal
-import java.time.Instant
 
 class ReportGenerator(
     private val publicApi: BinanceApiRestClient,
@@ -41,16 +40,16 @@ class ReportGenerator(
         }.toMap()
     }
 
-    fun getAssetHistoryReports(start: Instant): Map<String, AssetHistoryReport> {
+    fun getAssetHistoryReports(): Map<String, AssetHistoryReport> {
         val payments = privateApi.getPaymentHistory()
-        val trades = privateApi.getTradeHistory(start)
-        val distributions = privateApi.getDistributionHistory(start)
-        val flexibleSavingsInterests = privateApi.getFlexibleSavingsInterestHistory(start)
-        val lockedStakingInterests = privateApi.getLockedStakingInterestHistory(start)
-        val isolatedMarginBorrowings = privateApi.getIsolatedMarginBorrowingHistory(start)
-        val isolatedMarginRepayments = privateApi.getIsolatedMarginRepaymentHistory(start)
-        val isolatedMarginInterests = privateApi.getIsolatedMarginInterestHistory(start)
-        val isolatedMarginRebates = privateApi.getIsolatedMarginRebateHistory(start)
+        val trades = privateApi.getTradeHistory()
+        val distributions = privateApi.getDistributionHistory()
+        val flexibleSavingsInterests = privateApi.getFlexibleSavingsInterestHistory()
+        val lockedStakingInterests = privateApi.getLockedStakingInterestHistory()
+        val isolatedMarginBorrowings = privateApi.getIsolatedMarginBorrowingHistory()
+        val isolatedMarginRepayments = privateApi.getIsolatedMarginRepaymentHistory()
+        val isolatedMarginInterests = privateApi.getIsolatedMarginInterestHistory()
+        val isolatedMarginRebates = privateApi.getIsolatedMarginRebateHistory()
         return publicApi.getAllAssetsNames().map { asset ->
             asset to AssetHistoryReport(
                 asset = asset,
