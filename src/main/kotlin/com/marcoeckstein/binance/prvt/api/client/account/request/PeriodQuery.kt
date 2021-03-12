@@ -31,7 +31,7 @@ interface PeriodQuery<T : PeriodQuery<T>> {
                 endTime = range.upperEndpoint().let {
                     if (periodInfo.endTimeType == BoundType.CLOSED)
                         it.minus(1, periodInfo.timestampResolution)
-                    else 
+                    else
                         it
                 }
             )
