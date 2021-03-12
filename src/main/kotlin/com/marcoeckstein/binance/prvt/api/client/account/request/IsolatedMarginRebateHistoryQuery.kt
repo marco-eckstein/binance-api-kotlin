@@ -2,6 +2,7 @@
 
 package com.marcoeckstein.binance.prvt.api.client.account.request
 
+import com.google.common.collect.BoundType
 import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -41,7 +42,7 @@ data class IsolatedMarginRebateHistoryQuery(
 
     companion object : PeriodQuery.PeriodInfo {
 
-        override val isEndTimeInclusive = false
+        override val endTimeType = BoundType.OPEN
         override val timestampResolution = ChronoUnit.MILLIS
     }
 }

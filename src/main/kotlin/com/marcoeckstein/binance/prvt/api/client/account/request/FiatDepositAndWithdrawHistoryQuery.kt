@@ -2,6 +2,7 @@
 
 package com.marcoeckstein.binance.prvt.api.client.account.request
 
+import com.google.common.collect.BoundType
 import com.marcoeckstein.binance.prvt.api.client.account.WithdrawDirection
 import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
 import kotlinx.serialization.SerialName
@@ -39,7 +40,7 @@ data class FiatDepositAndWithdrawHistoryQuery(
 
     companion object : PeriodQuery.PeriodInfo {
 
-        override val isEndTimeInclusive = true
+        override val endTimeType = BoundType.CLOSED
         override val timestampResolution = ChronoUnit.MILLIS
     }
 }

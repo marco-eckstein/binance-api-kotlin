@@ -1,5 +1,6 @@
 package com.marcoeckstein.binance.prvt.api.client.account.request
 
+import com.google.common.collect.BoundType
 import com.google.common.collect.Range
 import com.marcoeckstein.binance.prvt.api.lib.guava.split
 import java.time.Duration
@@ -28,7 +29,10 @@ interface PeriodQuery<T : PeriodQuery<T>> {
             copyWith(
                 startTime = range.lowerEndpoint(),
                 endTime = range.upperEndpoint().let {
-                    if (periodInfo.isEndTimeInclusive) it.minus(1, periodInfo.timestampResolution) else it
+                    if (periodInfo.endTimeType == BoundType.CLOSED)
+                        it.minus(1, periodInfo.timestampResolution)
+                    else 
+                        it
                 }
             )
         }
@@ -43,7 +47,7 @@ interface PeriodQuery<T : PeriodQuery<T>> {
 
     interface PeriodInfo {
 
-        val isEndTimeInclusive: Boolean
+        val endTimeType: BoundType
         val timestampResolution: ChronoUnit
     }
 }

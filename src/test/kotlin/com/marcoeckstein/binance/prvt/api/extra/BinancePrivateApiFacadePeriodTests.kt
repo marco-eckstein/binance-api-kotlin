@@ -1,5 +1,6 @@
 package com.marcoeckstein.binance.prvt.api.extra
 
+import com.google.common.collect.BoundType
 import com.marcoeckstein.binance.prvt.api.client.account.AccountType
 import com.marcoeckstein.binance.prvt.api.client.account.Timestamped
 import com.marcoeckstein.binance.prvt.api.client.account.WithdrawDirection
@@ -183,7 +184,10 @@ class BinancePrivateApiFacadePeriodTests {
             query.copyWith(startTime = time.plus(1, resolution), endTime = time.plus(1, resolution))
         ) shouldNotContain item
         call(query.copyWith(startTime = time, endTime = time)).also {
-            if (query.periodInfo.isEndTimeInclusive) it shouldContain item else it shouldNotContain item
+            if (query.periodInfo.endTimeType == BoundType.CLOSED)
+                it shouldContain item
+            else
+                it shouldNotContain item
         }
     }
 

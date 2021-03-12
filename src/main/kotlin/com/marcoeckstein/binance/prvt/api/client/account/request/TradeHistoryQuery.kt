@@ -3,6 +3,7 @@
 package com.marcoeckstein.binance.prvt.api.client.account.request
 
 import com.binance.api.client.domain.OrderSide
+import com.google.common.collect.BoundType
 import com.marcoeckstein.binance.prvt.api.client.account.AccountType
 import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
 import kotlinx.serialization.SerialName
@@ -48,7 +49,7 @@ data class TradeHistoryQuery(
 
     companion object : PeriodQuery.PeriodInfo {
 
-        override val isEndTimeInclusive = false
+        override val endTimeType = BoundType.OPEN
         override val timestampResolution = ChronoUnit.MILLIS
     }
 }
