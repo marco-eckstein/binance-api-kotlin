@@ -52,7 +52,7 @@ interface PeriodQuery<T : PeriodQuery<T>> {
 
         fun calculateStartTime(range: Range<Instant>): Instant =
             range.lowerEndpoint().let {
-                if (range.upperBoundType() == BoundType.CLOSED) it else it.plus(1, timestampResolution)
+                if (range.lowerBoundType() == BoundType.CLOSED) it else it.plus(1, timestampResolution)
             }
 
         fun calculateEndTime(range: Range<Instant>): Instant =

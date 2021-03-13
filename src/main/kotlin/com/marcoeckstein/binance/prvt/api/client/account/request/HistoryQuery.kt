@@ -34,7 +34,7 @@ data class HistoryQuery(
     ) : this(
         pageIndex = pageIndex,
         pageSize = pageSize,
-        startTime = calculateEndTime(timeRange),
+        startTime = calculateStartTime(timeRange),
         endTime = calculateEndTime(timeRange),
     )
 

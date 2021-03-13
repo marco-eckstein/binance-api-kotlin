@@ -50,7 +50,7 @@ data class TradeHistoryQuery(
         pageIndex,
         pageSize,
         accountType,
-        startTime = calculateEndTime(timeRange),
+        startTime = calculateStartTime(timeRange),
         endTime = calculateEndTime(timeRange),
         baseAsset,
         quoteAsset,

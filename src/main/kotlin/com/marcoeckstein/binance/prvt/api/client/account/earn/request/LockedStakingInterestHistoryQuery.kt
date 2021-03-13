@@ -38,7 +38,7 @@ data class LockedStakingInterestHistoryQuery(
         pageIndex,
         pageSize,
         asset,
-        startTime = calculateEndTime(timeRange),
+        startTime = calculateStartTime(timeRange),
         endTime = calculateEndTime(timeRange),
     )
 

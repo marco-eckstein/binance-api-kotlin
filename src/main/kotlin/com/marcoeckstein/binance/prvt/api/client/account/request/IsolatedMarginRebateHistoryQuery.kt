@@ -41,7 +41,7 @@ data class IsolatedMarginRebateHistoryQuery(
         pageSize = pageSize,
         asset = asset,
         symbol = symbol,
-        startTime = calculateEndTime(timeRange),
+        startTime = calculateStartTime(timeRange),
         endTime = calculateEndTime(timeRange),
     )
 

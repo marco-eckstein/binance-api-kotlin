@@ -41,7 +41,7 @@ data class FiatDepositAndWithdrawHistoryQuery(
         direction,
         pageIndex = pageIndex,
         pageSize = pageSize,
-        startTime = calculateEndTime(timeRange),
+        startTime = calculateStartTime(timeRange),
         endTime = calculateEndTime(timeRange)
     )
 

@@ -38,7 +38,7 @@ data class DistributionHistoryQuery(
         pageIndex,
         pageSize,
         asset,
-        startTime = calculateEndTime(timeRange),
+        startTime = calculateStartTime(timeRange),
         endTime = calculateEndTime(timeRange)
     )
 

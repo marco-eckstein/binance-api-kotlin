@@ -42,7 +42,7 @@ data class FlexibleSavingsInterestHistoryQuery(
         pageSize,
         asset,
         lendingType,
-        startTime = calculateEndTime(timeRange),
+        startTime = calculateStartTime(timeRange),
         endTime = calculateEndTime(timeRange),
     )
 
