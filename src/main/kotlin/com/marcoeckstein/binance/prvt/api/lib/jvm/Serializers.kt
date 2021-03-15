@@ -40,7 +40,7 @@ internal object InstantAsEpochMilliSerializer : KSerializer<Instant> {
         Instant.ofEpochMilli(decoder.decodeLong())
 }
 
-internal abstract class InstantAsDateSerializerBase(
+internal abstract class InstantAsDateTimeSerializerBase(
     private val formatter: DateTimeFormatter
 ) : KSerializer<Instant> {
 

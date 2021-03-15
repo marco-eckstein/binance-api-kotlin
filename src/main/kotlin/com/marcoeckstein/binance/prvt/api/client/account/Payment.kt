@@ -1,11 +1,11 @@
 @file:UseSerializers(
-    InstantAsDateSerializer::class,
+    InstantAsDateTimeSerializer::class,
     BigDecimalAsPlainStringSerializer::class,
 )
 
 package com.marcoeckstein.binance.prvt.api.client.account
 
-import com.marcoeckstein.binance.prvt.api.client.InstantAsDateSerializer
+import com.marcoeckstein.binance.prvt.api.client.InstantAsDateTimeSerializer
 import com.marcoeckstein.binance.prvt.api.lib.jvm.BigDecimalAsPlainStringSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
