@@ -1,14 +1,11 @@
-@file:UseSerializers(
-    InstantAsEpochMilliSerializer::class,
-    BigDecimalAsPlainStringSerializer::class,
-)
+@file:UseSerializers(BigDecimalAsPlainStringSerializer::class)
 
 package com.marcoeckstein.binance.prvt.api.client.account
 
 import com.binance.api.client.domain.OrderSide
 import com.binance.api.client.domain.OrderType
 import com.marcoeckstein.binance.prvt.api.lib.jvm.BigDecimalAsPlainStringSerializer
-import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -38,8 +35,9 @@ data class Order(
     val type: OrderType,
     val side: OrderSide,
     val stopPrice: Double,
-    @SerialName("time")
+    @[Contextual SerialName("time")]
     override val timestamp: Instant,
+    @Contextual
     val updateTime: Instant?,
     val baseAsset: String,
     val quoteAsset: String,

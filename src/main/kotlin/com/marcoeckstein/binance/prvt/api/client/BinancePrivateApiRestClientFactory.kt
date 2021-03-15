@@ -1,8 +1,11 @@
 package com.marcoeckstein.binance.prvt.api.client
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -61,6 +64,9 @@ class BinancePrivateApiRestClientFactory private constructor(
                 Json {
                     ignoreUnknownKeys = true
                     encodeDefaults = true
+                    serializersModule = SerializersModule {
+                        contextual(InstantAsEpochMilliSerializer)
+                    }
                 }.asConverterFactory(MediaType.get("application/json"))
             )
             .build()

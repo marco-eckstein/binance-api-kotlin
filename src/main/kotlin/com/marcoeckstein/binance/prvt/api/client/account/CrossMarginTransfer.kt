@@ -1,12 +1,9 @@
-@file:UseSerializers(
-    InstantAsEpochMilliSerializer::class,
-    BigDecimalAsPlainStringSerializer::class,
-)
+@file:UseSerializers(BigDecimalAsPlainStringSerializer::class)
 
 package com.marcoeckstein.binance.prvt.api.client.account
 
 import com.marcoeckstein.binance.prvt.api.lib.jvm.BigDecimalAsPlainStringSerializer
-import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import java.math.BigDecimal
@@ -15,6 +12,7 @@ import java.time.Instant
 @Serializable
 data class CrossMarginTransfer(
     override val uid: String,
+    @Contextual
     override val timestamp: Instant,
     override val txId: String,
     override val asset: String,

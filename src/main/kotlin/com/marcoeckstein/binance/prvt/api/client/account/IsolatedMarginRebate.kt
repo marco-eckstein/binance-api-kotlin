@@ -1,16 +1,13 @@
-@file:UseSerializers(InstantAsEpochMilliSerializer::class)
-
 package com.marcoeckstein.binance.prvt.api.client.account
 
-import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.UseSerializers
 import java.time.Instant
 
 @Serializable
 data class IsolatedMarginRebate(
-    @SerialName("rebateTime")
+    @[Contextual SerialName("rebateTime")]
     override val timestamp: Instant,
     /**
      * Aka pair

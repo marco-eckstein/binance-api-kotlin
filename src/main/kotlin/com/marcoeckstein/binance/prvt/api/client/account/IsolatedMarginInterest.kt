@@ -1,12 +1,9 @@
-@file:UseSerializers(
-    InstantAsEpochMilliSerializer::class,
-    BigDecimalAsPlainStringSerializer::class,
-)
+@file:UseSerializers(BigDecimalAsPlainStringSerializer::class)
 
 package com.marcoeckstein.binance.prvt.api.client.account
 
 import com.marcoeckstein.binance.prvt.api.lib.jvm.BigDecimalAsPlainStringSerializer
-import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
@@ -17,7 +14,7 @@ import java.time.temporal.ChronoUnit
 @Serializable
 data class IsolatedMarginInterest(
     override val txId: String,
-    @SerialName("chargeEpoch")
+    @[Contextual SerialName("chargeEpoch")]
     override val timestamp: Instant,
     override val asset: String,
     override val principal: BigDecimal,

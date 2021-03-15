@@ -1,14 +1,11 @@
-@file:UseSerializers(
-    InstantAsEpochMilliSerializer::class,
-    BigDecimalAsPlainStringSerializer::class,
-)
+@file:UseSerializers(BigDecimalAsPlainStringSerializer::class)
 
 package com.marcoeckstein.binance.prvt.api.client.account
 
 import com.binance.api.client.domain.OrderSide
 import com.marcoeckstein.binance.prvt.api.lib.jvm.BigDecimalAsPlainStringSerializer
-import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
 import com.marcoeckstein.klib.java.math.equalsComparing
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
@@ -19,7 +16,7 @@ import java.time.Instant
 data class Trade(
     val tradeId: Long,
     val price: BigDecimal,
-    @SerialName("time")
+    @[Contextual SerialName("time")]
     override val timestamp: Instant,
     val symbol: String,
     val side: OrderSide,
