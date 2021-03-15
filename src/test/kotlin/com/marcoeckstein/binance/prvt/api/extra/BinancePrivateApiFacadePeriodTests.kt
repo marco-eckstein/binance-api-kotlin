@@ -43,7 +43,7 @@ class BinancePrivateApiFacadePeriodTests {
 
     @Test
     fun `getOrderHistory period is as expected`() {
-        privateApi.getOrderHistory(setOf(AccountType.SPOT)).take(sampleSize).forEach {
+        privateApi.getOrderHistory(AccountType.SPOT).take(sampleSize).forEach {
             val query = OrderHistoryQuery(
                 accountType = AccountType.SPOT,
                 baseAsset = it.baseAsset,
@@ -57,7 +57,7 @@ class BinancePrivateApiFacadePeriodTests {
 
     @Test
     fun `getTradeHistory period is as expected`() {
-        privateApi.getTradeHistory(setOf(AccountType.SPOT)).take(sampleSize).forEach {
+        privateApi.getTradeHistory(AccountType.SPOT).take(sampleSize).forEach {
             val query = TradeHistoryQuery(
                 accountType = AccountType.SPOT,
                 baseAsset = it.baseAsset,

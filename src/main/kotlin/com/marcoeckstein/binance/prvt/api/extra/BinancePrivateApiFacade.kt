@@ -106,15 +106,15 @@ class BinancePrivateApiFacade(
     }
 
     fun getOrderHistory(
-        accountTypes: Set<AccountType> =
-            setOf(AccountType.SPOT, AccountType.CROSS_MARGIN, AccountType.ISOLATED_MARGIN)
+        vararg accountTypes: AccountType =
+            arrayOf(AccountType.SPOT, AccountType.CROSS_MARGIN, AccountType.ISOLATED_MARGIN)
     ): List<Order> =
-        getOrderHistory(defaultTimeRange, accountTypes)
+        getOrderHistory(defaultTimeRange, *accountTypes)
 
     fun getOrderHistory(
         timeRange: Range<Instant>,
-        accountTypes: Set<AccountType> =
-            setOf(AccountType.SPOT, AccountType.CROSS_MARGIN, AccountType.ISOLATED_MARGIN)
+        vararg accountTypes: AccountType =
+            arrayOf(AccountType.SPOT, AccountType.CROSS_MARGIN, AccountType.ISOLATED_MARGIN)
     ): List<Order> {
         val query = OrderHistoryQuery(
             accountType = AccountType.SPOT,
@@ -129,15 +129,15 @@ class BinancePrivateApiFacade(
         executeWithPaging(query, client::getOrderHistory)
 
     fun getTradeHistory(
-        accountTypes: Set<AccountType> =
-            setOf(AccountType.SPOT, AccountType.CROSS_MARGIN, AccountType.ISOLATED_MARGIN)
+        vararg accountTypes: AccountType =
+            arrayOf(AccountType.SPOT, AccountType.CROSS_MARGIN, AccountType.ISOLATED_MARGIN)
     ): List<Trade> =
-        getTradeHistory(defaultTimeRange, accountTypes)
+        getTradeHistory(defaultTimeRange, *accountTypes)
 
     fun getTradeHistory(
         timeRange: Range<Instant>,
-        accountTypes: Set<AccountType> =
-            setOf(AccountType.SPOT, AccountType.CROSS_MARGIN, AccountType.ISOLATED_MARGIN)
+        vararg accountTypes: AccountType =
+            arrayOf(AccountType.SPOT, AccountType.CROSS_MARGIN, AccountType.ISOLATED_MARGIN)
     ): List<Trade> {
         val query = TradeHistoryQuery(
             accountType = AccountType.SPOT,
