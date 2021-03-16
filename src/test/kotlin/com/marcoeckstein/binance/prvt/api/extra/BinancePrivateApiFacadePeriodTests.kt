@@ -17,6 +17,7 @@ import com.marcoeckstein.binance.prvt.api.client.account.request.TradeHistoryQue
 import com.marcoeckstein.binance.prvt.api.privateApi
 import com.marcoeckstein.klib.algorithm.findNumber
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -32,7 +33,9 @@ class BinancePrivateApiFacadePeriodTests {
 
     @Test
     fun `getFiatDepositAndWithdrawHistory period is as expected`() {
-        privateApi.getFiatDepositAndWithdrawHistory(WithdrawDirection.DEPOSIT).take(sampleSize).forEach {
+        val history = privateApi.getFiatDepositAndWithdrawHistory(WithdrawDirection.DEPOSIT)
+        history shouldHaveAtLeastSize 1
+        history.take(sampleSize).forEach {
             checkPeriods(
                 FiatDepositAndWithdrawHistoryQuery(WithdrawDirection.DEPOSIT),
                 it,
@@ -43,7 +46,9 @@ class BinancePrivateApiFacadePeriodTests {
 
     @Test
     fun `getOrderHistory period is as expected`() {
-        privateApi.getOrderHistory(AccountType.SPOT).take(sampleSize).forEach {
+        val history = privateApi.getOrderHistory(AccountType.SPOT)
+        history shouldHaveAtLeastSize 1
+        history.take(sampleSize).forEach {
             val query = OrderHistoryQuery(
                 accountType = AccountType.SPOT,
                 baseAsset = it.baseAsset,
@@ -57,7 +62,9 @@ class BinancePrivateApiFacadePeriodTests {
 
     @Test
     fun `getTradeHistory period is as expected`() {
-        privateApi.getTradeHistory(AccountType.SPOT).take(sampleSize).forEach {
+        val history = privateApi.getTradeHistory(AccountType.SPOT)
+        history shouldHaveAtLeastSize 1
+        history.take(sampleSize).forEach {
             val query = TradeHistoryQuery(
                 accountType = AccountType.SPOT,
                 baseAsset = it.baseAsset,
@@ -70,7 +77,9 @@ class BinancePrivateApiFacadePeriodTests {
 
     @Test
     fun `getDistributionHistory period is as expected`() {
-        privateApi.getDistributionHistory().take(sampleSize).forEach {
+        val history = privateApi.getDistributionHistory()
+        history shouldHaveAtLeastSize 1
+        history.take(sampleSize).forEach {
             checkPeriods(
                 DistributionHistoryQuery(asset = it.asset),
                 it,
@@ -81,7 +90,9 @@ class BinancePrivateApiFacadePeriodTests {
 
     @Test
     fun `getFlexibleSavingsInterestHistory period is as expected`() {
-        privateApi.getFlexibleSavingsInterestHistory().take(sampleSize).forEach {
+        val history = privateApi.getFlexibleSavingsInterestHistory()
+        history shouldHaveAtLeastSize 1
+        history.take(sampleSize).forEach {
             checkPeriods(
                 FlexibleSavingsInterestHistoryQuery(asset = it.asset),
                 it,
@@ -93,7 +104,9 @@ class BinancePrivateApiFacadePeriodTests {
 
     @Test
     fun `getLockedStakingInterestHistory period is as expected`() {
-        privateApi.getLockedStakingInterestHistory().take(sampleSize).forEach {
+        val history = privateApi.getLockedStakingInterestHistory()
+        history shouldHaveAtLeastSize 1
+        history.take(sampleSize).forEach {
             checkPeriods(
                 LockedStakingInterestHistoryQuery(asset = it.asset),
                 it,
@@ -105,7 +118,9 @@ class BinancePrivateApiFacadePeriodTests {
 
     @Test
     fun `getIsolatedMarginBorrowingHistory period is as expected`() {
-        privateApi.getIsolatedMarginBorrowingHistory().take(sampleSize).forEach {
+        val history = privateApi.getIsolatedMarginBorrowingHistory()
+        history shouldHaveAtLeastSize 1
+        history.take(sampleSize).forEach {
             checkPeriods(
                 HistoryQuery(),
                 it,
@@ -117,7 +132,9 @@ class BinancePrivateApiFacadePeriodTests {
 
     @Test
     fun `getIsolatedMarginRepaymentHistory period is as expected`() {
-        privateApi.getIsolatedMarginRepaymentHistory().take(sampleSize).forEach {
+        val history = privateApi.getIsolatedMarginRepaymentHistory()
+        history shouldHaveAtLeastSize 1
+        history.take(sampleSize).forEach {
             checkPeriods(
                 HistoryQuery(),
                 it,
@@ -129,7 +146,9 @@ class BinancePrivateApiFacadePeriodTests {
 
     @Test
     fun `getIsolatedMarginTransferHistory period is as expected`() {
-        privateApi.getIsolatedMarginTransferHistory().take(sampleSize).forEach {
+        val history = privateApi.getIsolatedMarginTransferHistory()
+        history shouldHaveAtLeastSize 1
+        history.take(sampleSize).forEach {
             checkPeriods(
                 HistoryQuery(),
                 it,
@@ -140,7 +159,9 @@ class BinancePrivateApiFacadePeriodTests {
 
     @Test
     fun `getIsolatedMarginInterestHistory period is as expected`() {
-        privateApi.getIsolatedMarginInterestHistory().take(sampleSize).forEach {
+        val history = privateApi.getIsolatedMarginInterestHistory()
+        history shouldHaveAtLeastSize 1
+        history.take(sampleSize).forEach {
             checkPeriods(
                 IsolatedMarginInterestHistoryQuery(),
                 it,
@@ -151,7 +172,9 @@ class BinancePrivateApiFacadePeriodTests {
 
     @Test
     fun `getIsolatedMarginRebateHistory period is as expected`() {
-        privateApi.getIsolatedMarginRebateHistory().take(sampleSize).forEach {
+        val history = privateApi.getIsolatedMarginRebateHistory()
+        history shouldHaveAtLeastSize 1
+        history.take(sampleSize).forEach {
             checkPeriods(
                 IsolatedMarginRebateHistoryQuery(asset = it.asset),
                 it,
