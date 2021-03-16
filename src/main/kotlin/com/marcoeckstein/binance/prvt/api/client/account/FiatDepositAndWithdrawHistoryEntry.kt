@@ -3,7 +3,7 @@
 package com.marcoeckstein.binance.prvt.api.client.account
 
 import com.marcoeckstein.binance.prvt.api.lib.jvm.BigDecimalAsPlainStringSerializer
-import kotlinx.serialization.Contextual
+import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochSecondSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
@@ -13,7 +13,7 @@ import java.time.Instant
 @Serializable
 data class FiatDepositAndWithdrawHistoryEntry(
     val txId: Long,
-    @[Contextual SerialName("applyTime")]
+    @[Serializable(with = InstantAsEpochSecondSerializer::class) SerialName("applyTime")]
     override val timestamp: Instant,
     val coin: String,
     /**
@@ -34,12 +34,12 @@ data class FiatDepositAndWithdrawHistoryEntry(
     // More properties omitted
 ) : Timestamped {
 
-    init {
-        expectedAmount?.let {
-            val calculatedExpectedAmount: BigDecimal = transferAmount - transactionFee
-            require(it == calculatedExpectedAmount) {
-                "Expected amount == $it !== calculated expected amount == $calculatedExpectedAmount"
-            }
-        }
-    }
+//    init {
+//        expectedAmount?.let {
+//            val calculatedExpectedAmount: BigDecimal = transferAmount - transactionFee
+//            require(it == calculatedExpectedAmount) {
+//                "Expected amount == $it !== $calculatedExpectedAmount == calculated expected amount"
+//            }
+//        }
+//    }
 }

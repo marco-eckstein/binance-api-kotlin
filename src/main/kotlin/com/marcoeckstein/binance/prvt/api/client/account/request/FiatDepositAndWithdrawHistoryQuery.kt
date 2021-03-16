@@ -1,11 +1,11 @@
-@file:UseSerializers(InstantAsEpochMilliSerializer::class)
+@file:UseSerializers(InstantAsEpochSecondSerializer::class)
 
 package com.marcoeckstein.binance.prvt.api.client.account.request
 
 import com.google.common.collect.BoundType
 import com.google.common.collect.Range
 import com.marcoeckstein.binance.prvt.api.client.account.WithdrawDirection
-import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochMilliSerializer
+import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochSecondSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
@@ -55,6 +55,6 @@ data class FiatDepositAndWithdrawHistoryQuery(
     companion object : PeriodQuery.PeriodInfo {
 
         override val endTimeType = BoundType.CLOSED
-        override val timestampResolution = ChronoUnit.MILLIS
+        override val timestampResolution = ChronoUnit.SECONDS
     }
 }

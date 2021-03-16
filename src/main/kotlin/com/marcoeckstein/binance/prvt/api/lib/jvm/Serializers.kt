@@ -40,6 +40,22 @@ internal object InstantAsEpochMilliSerializer : KSerializer<Instant> {
         Instant.ofEpochMilli(decoder.decodeLong())
 }
 
+internal object InstantAsEpochSecondSerializer : KSerializer<Instant> {
+
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor(InstantAsEpochSecondSerializer::class.simpleName!!, PrimitiveKind.LONG)
+
+    override fun serialize(encoder: Encoder, value: Instant) {
+        require(value == value.truncatedTo(ChronoUnit.SECONDS)) {
+            "Value must not be more precise than seconds."
+        }
+        encoder.encodeLong(value.epochSecond)
+    }
+
+    override fun deserialize(decoder: Decoder): Instant =
+        Instant.ofEpochSecond(decoder.decodeLong())
+}
+
 internal abstract class InstantAsDateTimeSerializerBase(
     private val formatter: DateTimeFormatter
 ) : KSerializer<Instant> {
