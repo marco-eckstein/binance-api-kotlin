@@ -17,9 +17,9 @@ internal class QueryResult2<T : Any>(
     class DataContainer<T>(
         val data: List<T>?,
         val direction: Int? = null,
-        val page: Int,
+        val page: Int? = null,
         val pages: Int,
-        val rows: Int,
+        val rows: Int? = null,
         val total: Int,
     )
 }

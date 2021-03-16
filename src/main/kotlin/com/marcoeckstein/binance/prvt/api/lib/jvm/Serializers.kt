@@ -56,6 +56,9 @@ internal object InstantAsEpochSecondSerializer : KSerializer<Instant> {
         Instant.ofEpochSecond(decoder.decodeLong())
 }
 
+internal object InstantAsIsoDateTimeSerializer :
+    InstantAsDateTimeSerializerBase(DateTimeFormatter.ISO_DATE_TIME)
+
 internal abstract class InstantAsDateTimeSerializerBase(
     private val formatter: DateTimeFormatter
 ) : KSerializer<Instant> {

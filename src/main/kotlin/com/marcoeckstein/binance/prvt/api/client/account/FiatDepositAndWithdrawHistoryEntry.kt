@@ -1,10 +1,12 @@
-@file:UseSerializers(BigDecimalAsPlainStringSerializer::class)
+@file:UseSerializers(
+    BigDecimalAsPlainStringSerializer::class,
+    InstantAsDateTimeSerializer::class,
+)
 
 package com.marcoeckstein.binance.prvt.api.client.account
 
+import com.marcoeckstein.binance.prvt.api.client.InstantAsDateTimeSerializer
 import com.marcoeckstein.binance.prvt.api.lib.jvm.BigDecimalAsPlainStringSerializer
-import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochSecondSerializer
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import java.math.BigDecimal
@@ -12,34 +14,37 @@ import java.time.Instant
 
 @Serializable
 data class FiatDepositAndWithdrawHistoryEntry(
-    val txId: Long,
-    @[Serializable(with = InstantAsEpochSecondSerializer::class) SerialName("applyTime")]
-    override val timestamp: Instant,
-    val coin: String,
     /**
      * Aka order id
      */
-    val paymentId: String,
+    val orderNo: String,
+    val indicatedAmount: BigDecimal,
+    /**
+     * Aka coin
+     */
+    val fiatCurrency: String,
+    /**
+     * E.g. "Successful"
+     */
     val statusName: String,
-    val transactionFee: BigDecimal,
+    val amount: BigDecimal,
+    val totalFee: BigDecimal,
     /**
-     * Aka indicated amount
+     * Aka payment method
      */
-    val transferAmount: BigDecimal,
-    /**
-     * Aka amount
-     */
-    val expectedAmount: BigDecimal?,
-    val paymentMethod: String?,
+    val transactionMethod: String?,
+    val createTime: Instant,
+    val updateTime: Instant,
+    val completedTime: Instant,
     // More properties omitted
 ) : Timestamped {
 
-//    init {
-//        expectedAmount?.let {
-//            val calculatedExpectedAmount: BigDecimal = transferAmount - transactionFee
-//            require(it == calculatedExpectedAmount) {
-//                "Expected amount == $it !== $calculatedExpectedAmount == calculated expected amount"
-//            }
-//        }
-//    }
+    init {
+        val calculatedAmount = indicatedAmount - totalFee
+        require(amount == calculatedAmount) { "Expected amount == $calculatedAmount, but was $amount." }
+        require(createTime <= completedTime)
+        require(completedTime <= updateTime)
+    }
+
+    override val timestamp: Instant = createTime
 }

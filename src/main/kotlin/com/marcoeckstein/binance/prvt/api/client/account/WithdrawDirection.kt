@@ -11,9 +11,8 @@ import kotlinx.serialization.encoding.Encoder
 @Serializable(with = WithdrawDirection.Serializer::class)
 enum class WithdrawDirection(internal val serializedName: String) {
 
-    DEPOSIT("0"),
-    WITHDRAW("1"),
-    CASH_TRANSFER("2")
+    DEPOSIT("deposit"),
+    WITHDRAW("withdraw"),
     ;
 
     internal object Serializer : KSerializer<WithdrawDirection> {

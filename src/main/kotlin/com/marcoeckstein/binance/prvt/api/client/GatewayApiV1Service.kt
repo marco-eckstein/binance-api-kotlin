@@ -28,49 +28,49 @@ import retrofit2.http.Query
 @Suppress("LongParameterList") // detekt
 internal interface GatewayApiV1Service {
 
-    @GET("isolated-margin/isolated-margin-account-details?requireCoupon=true")
+    @GET("private/isolated-margin/isolated-margin-account-details?requireCoupon=true")
     fun getIsolatedMarginAccountDetails(
         @HeaderMap headers: Map<String, String>
     ): Call<QueryResult1<IsolatedMarginAccountDetail>>
 
-    @GET("isolated-margin/isolated-margin-asset-position")
+    @GET("private/isolated-margin/isolated-margin-asset-position")
     fun getIsolatedMarginAccountPositions(
         @HeaderMap headers: Map<String, String>
     ): Call<QueryResult1<IsolatedMarginAccountPosition>>
 
-    @POST("fiatpayment/charge-withdraw-histroy") // "histroy" is correct.
+    @POST("friendly/fiatpayment/transactions/get-order-history")
     fun getFiatDepositAndWithdrawHistory(
         @HeaderMap headers: Map<String, String>,
         @Body query: FiatDepositAndWithdrawHistoryQuery
     ): Call<QueryResult2<FiatDepositAndWithdrawHistoryEntry>>
 
-    @POST("asset/asset/user-asset-dividend")
+    @POST("private/asset/asset/user-asset-dividend")
     fun getDistributionHistory(
         @HeaderMap headers: Map<String, String>,
         @Body query: DistributionHistoryQuery
     ): Call<QueryResult1<Distribution>>
 
-    @POST("ocbs/get-user-payment-history")
+    @POST("private/ocbs/get-user-payment-history")
     fun getPaymentHistory(
         @HeaderMap headers: Map<String, String>,
         @Body query: PaymentHistoryQuery
     ): Call<QueryResult3<Payment>>
 
-    @GET("lending/daily/token/position")
+    @GET("private/lending/daily/token/position")
     fun getFlexibleSavingsPositions(
         @HeaderMap headers: Map<String, String>,
         @Query("pageIndex") pageIndex: Int,
         @Query("pageSize") pageSize: Int,
     ): Call<QueryResult1<FlexibleSavingsPosition>>
 
-    @GET("pos/project-position/list")
+    @GET("private/pos/project-position/list")
     fun getLockedStakingPositions(
         @HeaderMap headers: Map<String, String>,
         @Query("pageIndex") pageIndex: Int,
         @Query("pageSize") pageSize: Int,
     ): Call<QueryResult1<LockedStakingPosition>>
 
-    @GET("lending/union/interestHistory/list")
+    @GET("private/lending/union/interestHistory/list")
     fun getFlexibleSavingsInterestHistory(
         @HeaderMap headers: Map<String, String>,
         @Query("pageIndex") pageIndex: Int?,
@@ -81,7 +81,7 @@ internal interface GatewayApiV1Service {
         @Query("endTime") endTime: Long?,
     ): Call<QueryResult1<FlexibleSavingsInterest>>
 
-    @GET("pos/project-interest/history")
+    @GET("private/pos/project-interest/history")
     fun getLockedStakingInterestHistory(
         @HeaderMap headers: Map<String, String>,
         @Query("pageIndex") pageIndex: Int?,
@@ -91,7 +91,7 @@ internal interface GatewayApiV1Service {
         @Query("endTime") endTime: Long?,
     ): Call<QueryResult1<LockedStakingInterest>>
 
-    @GET("isolated-margin/order/bnb-discount-histories")
+    @GET("private/isolated-margin/order/bnb-discount-histories")
     fun getIsolatedMarginRebateHistory(
         @HeaderMap headers: Map<String, String>,
         @Query("current") current: Int?,
@@ -102,7 +102,7 @@ internal interface GatewayApiV1Service {
         @Query("endTime") endTime: Long?,
     ): Call<QueryResult1<IsolatedMarginRebate>>
 
-    @GET("isolated-margin/interest-history")
+    @GET("private/isolated-margin/interest-history")
     fun getIsolatedMarginInterestHistory(
         @HeaderMap headers: Map<String, String>,
         @Query("current") current: Int?,
@@ -113,6 +113,6 @@ internal interface GatewayApiV1Service {
 
     companion object {
 
-        const val BaseUrl = "https://www.binance.com/gateway-api/v1/private/"
+        const val BaseUrl = "https://www.binance.com/gateway-api/v1/"
     }
 }

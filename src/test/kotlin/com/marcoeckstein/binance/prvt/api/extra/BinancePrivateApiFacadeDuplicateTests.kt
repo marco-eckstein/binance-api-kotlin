@@ -18,7 +18,6 @@ class BinancePrivateApiFacadeDuplicateTests {
         @JvmStatic
         val calls = listOf<BinancePrivateApiFacade.() -> List<Any>>(
             { getFiatDepositAndWithdrawHistory(WithdrawDirection.DEPOSIT) },
-            { getFiatDepositAndWithdrawHistory(WithdrawDirection.CASH_TRANSFER) },
             { getFiatDepositAndWithdrawHistory(WithdrawDirection.WITHDRAW) },
             { getOrderHistory() },
             { getTradeHistory() },

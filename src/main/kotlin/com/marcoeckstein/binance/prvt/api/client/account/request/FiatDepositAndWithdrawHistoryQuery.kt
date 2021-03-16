@@ -1,11 +1,11 @@
-@file:UseSerializers(InstantAsEpochSecondSerializer::class)
+@file:UseSerializers(InstantAsIsoDateTimeSerializer::class)
 
 package com.marcoeckstein.binance.prvt.api.client.account.request
 
 import com.google.common.collect.BoundType
 import com.google.common.collect.Range
 import com.marcoeckstein.binance.prvt.api.client.account.WithdrawDirection
-import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsEpochSecondSerializer
+import com.marcoeckstein.binance.prvt.api.lib.jvm.InstantAsIsoDateTimeSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
@@ -14,20 +14,20 @@ import java.time.temporal.ChronoUnit
 
 @Serializable
 data class FiatDepositAndWithdrawHistoryQuery(
-    val direction: WithdrawDirection,
+    val businessType: WithdrawDirection,
     @SerialName("page")
     override val pageIndex: Int = 1,
     /**
-     * Max: 2000
+     * Seems to be unlimited
      */
     @SerialName("rows")
     override val pageSize: Int = 2000,
-    @SerialName("beginTime")
+    @SerialName("startDate")
     override val startTime: Instant? = null,
     /**
      * End time, inclusive
      */
-    @SerialName("finishTime")
+    @SerialName("endDate")
     override val endTime: Instant? = null,
 ) : PagingQuery<FiatDepositAndWithdrawHistoryQuery>,
     PeriodQuery<FiatDepositAndWithdrawHistoryQuery> {
@@ -35,7 +35,7 @@ data class FiatDepositAndWithdrawHistoryQuery(
     constructor(
         direction: WithdrawDirection,
         pageIndex: Int = 1,
-        pageSize: Int = 2000,
+        pageSize: Int = Int.MAX_VALUE,
         timeRange: Range<Instant>,
     ) : this(
         direction,
@@ -55,6 +55,11 @@ data class FiatDepositAndWithdrawHistoryQuery(
     companion object : PeriodQuery.PeriodInfo {
 
         override val endTimeType = BoundType.CLOSED
+
+        /**
+         * ChronoUnit.MILLIS seems to be ok, but the result items have only a resolution of ChronoUnit.SECONDS,
+         * so let's keep that consistent.
+         */
         override val timestampResolution = ChronoUnit.SECONDS
     }
 }
