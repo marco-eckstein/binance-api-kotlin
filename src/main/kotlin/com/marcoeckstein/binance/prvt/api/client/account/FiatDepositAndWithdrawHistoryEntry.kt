@@ -46,5 +46,5 @@ data class FiatDepositAndWithdrawHistoryEntry(
         require(completedTime <= updateTime)
     }
 
-    override val timestamp: Instant = createTime
+    override val timestamp: Instant get() = createTime
 }
