@@ -14,28 +14,28 @@ import java.time.Instant
 
 @Serializable
 data class FiatDepositAndWithdrawHistoryEntry(
+    val createTime: Instant,
+    val updateTime: Instant,
+    val completedTime: Instant,
     /**
      * Aka order id
      */
     val orderNo: String,
-    val indicatedAmount: BigDecimal,
     /**
      * Aka coin
      */
     val fiatCurrency: String,
-    /**
-     * E.g. "Successful"
-     */
-    val statusName: String,
     val amount: BigDecimal,
     val totalFee: BigDecimal,
+    val indicatedAmount: BigDecimal,
     /**
      * Aka payment method
      */
     val transactionMethod: String?,
-    val createTime: Instant,
-    val updateTime: Instant,
-    val completedTime: Instant,
+    /**
+     * E.g. "Successful"
+     */
+    val statusName: String,
     // More properties omitted
 ) : Timestamped {
 

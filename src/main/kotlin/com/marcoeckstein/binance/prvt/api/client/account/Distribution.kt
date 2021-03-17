@@ -14,7 +14,7 @@ import java.time.Instant
 data class Distribution(
     @[Contextual SerialName("operateTime")]
     override val timestamp: Instant,
-    val amount: BigDecimal,
     val asset: String,
+    val amount: BigDecimal,
     val info: String,
 ) : Timestamped

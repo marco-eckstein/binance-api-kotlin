@@ -15,23 +15,37 @@ import java.time.Instant
 
 @Serializable
 data class Payment(
+    @SerialName("createTime")
+    override val timestamp: Instant,
     val id: String,
+    /**
+     * Aka transaction id
+     */
+    val orderId: String,
     val type: PaymentType,
+    /**
+     * Found in GUI/.xlsx columns "Price" and "Amount"/"Final Amount".
+     */
+    val cryptoCurrency: String,
+    /**
+     * Found in GUI/.xlsx columns "Price" and "Amount"/"Final Amount".
+     */
+    val fiatCurrency: String,
+    val price: BigDecimal,
     /**
      * Aka amount
      */
     val sourceAmount: BigDecimal,
     /**
-     * Aka fees
-     */
-    val totalFee: BigDecimal,
-    val tradeFee: BigDecimal,
-    val railFee: BigDecimal,
-    val price: BigDecimal,
-    /**
      * Aka final amount
      */
     val obtainAmount: BigDecimal,
+    /**
+     * Aka fees
+     */
+    val tradeFee: BigDecimal,
+    val railFee: BigDecimal,
+    val totalFee: BigDecimal,
     /**
      * "4" = "Completed"
      * "5" = "Failed"
@@ -44,23 +58,9 @@ data class Payment(
      */
     val payType: String,
     val rail: String,
-    @SerialName("createTime")
-    override val timestamp: Instant,
-    /**
-     * Aka transaction id
-     */
-    val orderId: String,
     val quoteId: String,
     val userId: String,
     val email: String,
-    /**
-     * Found in GUI/.xlsx columns "Price" and "Amount"/"Final Amount".
-     */
-    val cryptoCurrency: String,
-    /**
-     * Found in GUI/.xlsx columns "Price" and "Amount"/"Final Amount".
-     */
-    val fiatCurrency: String,
     val enableRecurring: Boolean? = null,
     // It is unclear which types the following properties have, since they seem to always contain the same values:
     // val mode: null,

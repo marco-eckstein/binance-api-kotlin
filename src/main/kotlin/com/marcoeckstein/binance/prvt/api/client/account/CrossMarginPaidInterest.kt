@@ -12,9 +12,9 @@ import java.time.Instant
 
 @Serializable
 data class CrossMarginPaidInterest(
-    override val txId: String,
     @[Contextual SerialName("chargeEpoch")]
     override val timestamp: Instant,
+    override val txId: String,
     override val asset: String,
     override val principal: BigDecimal,
     override val interest: BigDecimal,

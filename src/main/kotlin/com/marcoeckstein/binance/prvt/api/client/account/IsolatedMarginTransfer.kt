@@ -11,10 +11,10 @@ import java.time.Instant
 
 @Serializable
 data class IsolatedMarginTransfer(
-    override val uid: String,
     @Contextual
     override val timestamp: Instant,
     override val txId: String,
+    override val uid: String,
     override val asset: String,
     override val amount: BigDecimal,
     override val status: String,

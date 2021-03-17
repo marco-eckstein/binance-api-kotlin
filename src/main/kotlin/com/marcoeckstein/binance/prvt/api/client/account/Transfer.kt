@@ -4,8 +4,8 @@ import java.math.BigDecimal
 
 interface Transfer : Timestamped {
 
-    val uid: String
     val txId: String
+    val uid: String
     val asset: String
     val amount: BigDecimal
     val status: String

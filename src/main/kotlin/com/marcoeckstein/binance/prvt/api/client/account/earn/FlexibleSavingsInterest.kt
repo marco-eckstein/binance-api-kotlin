@@ -13,12 +13,12 @@ import java.time.Instant
 
 @Serializable
 data class FlexibleSavingsInterest(
-    val id: String,
     @[Contextual SerialName("createTimestamp")]
     override val timestamp: Instant,
-    val productName: String,
-    val userId: String,
+    val id: String,
     val asset: String,
     val amount: BigDecimal,
+    val productName: String,
+    val userId: String,
     val lendingType: LendingType,
 ) : Timestamped

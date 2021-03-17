@@ -14,21 +14,21 @@ import java.time.Instant
 
 @Serializable
 data class Trade(
-    val tradeId: Long,
-    val price: BigDecimal,
     @[Contextual SerialName("time")]
     override val timestamp: Instant,
-    val symbol: String,
+    val tradeId: Long,
     val side: OrderSide,
-    val activeBuy: Boolean,
+    val symbol: String,
+    val baseAsset: String,
+    val quoteAsset: String,
+    val price: BigDecimal,
     val qty: BigDecimal,
     val fee: BigDecimal,
     val feeAsset: String,
     val totalQuota: BigDecimal,
-    val productName: String?,
-    val baseAsset: String,
-    val quoteAsset: String,
+    val activeBuy: Boolean,
     val userId: Long,
+    val productName: String?,
     // It is unclear which types the following properties have, since they seem to always contain the same values:
     // public val realPnl: 0,
     // public val money: null,

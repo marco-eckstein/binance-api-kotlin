@@ -16,10 +16,10 @@ import java.time.Instant
 
 @Serializable
 data class LockedStakingInterest(
-    val duration: String,
-    val asset: String,
-    val interest: BigDecimal,
     @SerialName("createTimestamp")
     override val timestamp: Instant,
+    val asset: String,
+    val interest: BigDecimal,
+    val duration: String,
     val type: String,
 ) : Timestamped
