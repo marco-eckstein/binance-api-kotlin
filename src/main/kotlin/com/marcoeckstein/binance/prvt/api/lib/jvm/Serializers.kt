@@ -57,16 +57,20 @@ internal object InstantAsEpochSecondSerializer : KSerializer<Instant> {
 }
 
 internal object InstantAsIsoDateTimeSerializer :
-    InstantAsDateTimeSerializerBase(DateTimeFormatter.ISO_DATE_TIME)
+    InstantAsDateTimeSerializerBase(DateTimeFormatter.ISO_DATE_TIME, ChronoUnit.NANOS)
 
 internal abstract class InstantAsDateTimeSerializerBase(
-    private val formatter: DateTimeFormatter
+    private val formatter: DateTimeFormatter,
+    private val maxPrecision: ChronoUnit,
 ) : KSerializer<Instant> {
 
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor(javaClass.simpleName, PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: Instant) {
+        require(value == value.truncatedTo(maxPrecision)) {
+            "Value must not be more precise than $maxPrecision."
+        }
         encoder.encodeString(
             formatter.format(value.atOffset(ZoneOffset.UTC))
         )
