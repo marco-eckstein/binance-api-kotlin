@@ -18,7 +18,7 @@ fun <TQuery : PagingQuery<TQuery>, TResultItem> executeWithPaging(
     val allResultItems = mutableListOf<TResultItem>()
     do {
         val currentResultItems = call(currentQuery)
-        allResultItems += currentResultItems
+        allResultItems.addAll(0, currentResultItems.reversed())
         currentQuery = currentQuery.forNextPage()
     } while (currentResultItems.size == pageSize)
     return allResultItems
