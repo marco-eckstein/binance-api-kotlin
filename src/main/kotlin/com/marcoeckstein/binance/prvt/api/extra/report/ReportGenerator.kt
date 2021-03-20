@@ -53,15 +53,15 @@ class ReportGenerator(
         return publicApi.getAllAssetsNames().map { asset ->
             asset to AssetHistoryReport(
                 asset = asset,
-                payments = payments.filter { it.cryptoCurrency == asset },
-                trades = trades.filter { it.baseAsset == asset || it.quoteAsset == asset },
-                distributions = distributions.filter { it.asset == asset },
-                flexibleSavingsInterests = flexibleSavingsInterests.filter { it.asset == asset },
-                lockedStakingInterests = lockedStakingInterests.filter { it.asset == asset },
-                isolatedMarginBorrowings = isolatedMarginBorrowings.filter { it.asset == asset },
-                isolatedMarginRepayments = isolatedMarginRepayments.filter { it.asset == asset },
-                isolatedMarginInterests = isolatedMarginInterests.filter { it.asset == asset },
-                isolatedMarginRebates = isolatedMarginRebates.filter { it.asset == asset },
+                payments = payments,
+                trades = trades,
+                distributions = distributions,
+                flexibleSavingsInterests = flexibleSavingsInterests,
+                lockedStakingInterests = lockedStakingInterests,
+                isolatedMarginBorrowings = isolatedMarginBorrowings,
+                isolatedMarginRepayments = isolatedMarginRepayments,
+                isolatedMarginInterests = isolatedMarginInterests,
+                isolatedMarginRebates = isolatedMarginRebates,
             )
         }.toMap()
     }

@@ -1,5 +1,6 @@
 package com.marcoeckstein.binance.prvt.api.extra.report
 
+import com.binance.api.client.domain.OrderSide
 import com.marcoeckstein.binance.prvt.api.client.account.Distribution
 import com.marcoeckstein.binance.prvt.api.client.account.IsolatedMarginBorrowing
 import com.marcoeckstein.binance.prvt.api.client.account.IsolatedMarginInterest
@@ -9,9 +10,7 @@ import com.marcoeckstein.binance.prvt.api.client.account.Payment
 import com.marcoeckstein.binance.prvt.api.client.account.Trade
 import com.marcoeckstein.binance.prvt.api.client.account.earn.FlexibleSavingsInterest
 import com.marcoeckstein.binance.prvt.api.client.account.earn.LockedStakingInterest
-import com.marcoeckstein.binance.prvt.api.extra.extensions.baseAssetDelta
 import com.marcoeckstein.binance.prvt.api.extra.extensions.cryptoCurrencyDelta
-import com.marcoeckstein.binance.prvt.api.extra.extensions.quoteAssetDelta
 import java.math.BigDecimal
 
 data class AssetHistoryReport(
@@ -28,32 +27,51 @@ data class AssetHistoryReport(
 ) {
 
     val paymentBalance =
-        payments.sumOf { it.cryptoCurrencyDelta }
+        payments.filter { it.status == "4" && it.cryptoCurrency == asset }.sumOf { it.cryptoCurrencyDelta }
 
-    val tradeBalance =
-        (trades.groupBy { it.baseAsset }.mapValues { entry -> entry.value.sumOf { it.baseAssetDelta } }[asset]
-            ?: BigDecimal.ZERO) +
-            (trades.groupBy { it.quoteAsset }
-                .mapValues { entry -> entry.value.sumOf { it.quoteAssetDelta } }[asset] ?: BigDecimal.ZERO)
+    val tradeBalance = trades.sumOf {
+        when (asset) {
+            it.baseAsset -> if (it.side == OrderSide.BUY) it.qty else it.qty.negate()
+            it.quoteAsset -> if (it.side == OrderSide.SELL) it.totalQuota else it.totalQuota.negate()
+            else -> BigDecimal.ZERO
+        }
+    }
 
-    val distributionsTotal = distributions.sumOf { it.amount }
+    val distributionsTotal = distributions.filter { it.asset == asset }.sumOf { it.amount }
 
-    val flexibleSavingsInterestsTotal = flexibleSavingsInterests.sumOf { it.amount }
+    val flexibleSavingsInterestsTotal =
+        flexibleSavingsInterests.filter { it.asset == asset }.sumOf { it.amount }
 
-    val lockedStakingInterestsTotal = lockedStakingInterests.sumOf { it.interest }
+    val lockedStakingInterestsTotal =
+        lockedStakingInterests.filter { it.asset == asset }.sumOf { it.interest }
 
-    val isolatedMarginRebatesTotal = isolatedMarginRebates.sumOf { BigDecimal.valueOf(it.rebateAmount) }
+    val fees = trades.sumOf { if (asset == it.feeAsset) it.fee else BigDecimal.ZERO }
 
-    val isolatedMarginBorrowed = isolatedMarginBorrowings.sumOf { it.principal }
+    val isolatedMarginRebatesTotal =
+        isolatedMarginRebates.filter { it.asset == asset }.sumOf { BigDecimal.valueOf(it.rebateAmount) }
 
-    val isolatedMarginRepaid = isolatedMarginRepayments.sumOf { it.principal }
+    val isolatedMarginRebatesDeductedTotal: BigDecimal =
+        if (asset == "BNB")
+            isolatedMarginRebates.sumOf { BigDecimal.valueOf(it.deductBnbAmt) }
+        else
+            BigDecimal.ZERO
 
-    val isolatedMarginRepaidInterest = isolatedMarginRepayments.sumOf { it.interest }
+    val feeBalance = isolatedMarginRebatesTotal - fees - isolatedMarginRebatesDeductedTotal
+
+    val isolatedMarginBorrowed =
+        isolatedMarginBorrowings.filter { it.status == "CONFIRM" && it.asset == asset }.sumOf { it.principal }
+
+    val isolatedMarginRepaid =
+        isolatedMarginRepayments.filter { it.status == "CONFIRM" && it.asset == asset }.sumOf { it.principal }
+
+    val isolatedMarginRepaidInterest =
+        isolatedMarginRepayments.filter { it.status == "CONFIRM" && it.asset == asset }.sumOf { it.interest }
 
     val isolatedMarginBorrowBalance =
         isolatedMarginBorrowed - isolatedMarginRepaid - isolatedMarginRepaidInterest
 
-    val isolatedMarginInterestsTotal = isolatedMarginInterests.sumOf { it.interest }
+    val isolatedMarginInterestsTotal =
+        isolatedMarginInterests.filter { it.asset == asset }.sumOf { it.interest }
 
     val gross = listOf(
         paymentBalance,
@@ -61,7 +79,7 @@ data class AssetHistoryReport(
         distributionsTotal,
         flexibleSavingsInterestsTotal,
         lockedStakingInterestsTotal,
-        isolatedMarginRebatesTotal,
+        feeBalance,
         isolatedMarginBorrowBalance,
     ).sumOf { it }
 
@@ -79,7 +97,10 @@ data class AssetHistoryReport(
         Distribution: ${distributionsTotal.toPlainString()}
         Earned flexible savings interest: ${flexibleSavingsInterestsTotal.toPlainString()}
         Earned locked staking interests: ${lockedStakingInterestsTotal.toPlainString()}
-        Rebates: ${isolatedMarginRebatesTotal.toPlainString()}
+        Fee balance : ${feeBalance.toPlainString()}
+            Fees: ${fees.toPlainString()}
+            Rebates/deducted: ${isolatedMarginRebatesDeductedTotal.toPlainString()}
+            Rebates: ${isolatedMarginRebatesTotal.toPlainString()}
         Borrow balance: ${isolatedMarginBorrowBalance.toPlainString()}
             Borrowed: ${isolatedMarginBorrowed.toPlainString()}
             Repaid: ${isolatedMarginRepaid.toPlainString()}
