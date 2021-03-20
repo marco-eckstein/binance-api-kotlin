@@ -21,6 +21,4 @@ interface PaidInterest : Timestamped {
      * Daily interest rate
      */
     val interestRate: BigDecimal
-
-    val status: String?
 }

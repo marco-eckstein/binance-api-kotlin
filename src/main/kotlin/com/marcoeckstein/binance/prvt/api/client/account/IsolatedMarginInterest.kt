@@ -21,7 +21,6 @@ data class IsolatedMarginInterest(
     override val interest: BigDecimal,
     override val type: String,
     override val interestRate: BigDecimal,
-    override val status: String? = null,
     val base: String,
     val quote: String,
     val symbol: String,

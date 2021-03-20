@@ -20,5 +20,4 @@ data class CrossMarginPaidInterest(
     override val interest: BigDecimal,
     override val type: String,
     override val interestRate: BigDecimal,
-    override val status: String? = null,
 ) : PaidInterest
