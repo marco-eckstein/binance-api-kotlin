@@ -191,10 +191,12 @@ of them, especially if you want to understand the source code.
   I cannot tell whether these stem from bugs in their web client or in their private REST API.
   This means when using this project, you could observe bugs that are not within my realm of responsibility
   at all.
-- The reports may return incorrect numbers. The current quantities should be consistent with the history.
-  However, for my account, for a very small fraction of my assets, they differ. Assuming Binance did not just
-  deposit or withdraw assets from my account without properly recording these transaction in history, there must
-  be some error.
+- Most decimal numbers are returned by the Binance API as JSON strings which can be converted to `BigDecimal`s.
+  However, rebates (a.k.a. returned fees or discounts) are returned as JSON numbers, which are prone to be
+  inexact.
+  The report or the current quantities should be consistent with the report history.
+  However, for my account, for BNB, they differ by a very small amount.
+  I think this is due to the use of numbers.
 
 If you want to help with these issues, feel free to contact me or create a pull request.
 
@@ -212,5 +214,4 @@ use `config.properties.template` as a template and rename it. It expects the fol
 
 ### Roadmap
 
-- Examine why reports are not 100% consistent. This will probably involve Binance support.
 - CSV export
