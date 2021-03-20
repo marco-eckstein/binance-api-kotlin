@@ -44,19 +44,22 @@ class ReportGeneratorTests {
         if (diffGross notEqualsComparing BigDecimal.ZERO || diffNet notEqualsComparing BigDecimal.ZERO) {
             val message = "Reports for $asset are not consistent.\n\n" +
                 quantities.toReportString() + "\n\n" +
-                history.toReportString() + "\n\n" +
-                "= Summary =\n" + (
-                if (!(diffGross equalsComparing BigDecimal.ZERO)) """
+                history.toReportString() + "\n\n" + """
+                    = Summary =
                     Quantity gross:  ${quantities.gross.toPlainString()}
                     History gross: ${history.gross.toPlainString()}
-                    Diff gross (should be zero): ${diffGross.toPlainString()}
-                """.trimIndent() + "\n" else ""
-                ) + (
-                if (!(diffNet equalsComparing BigDecimal.ZERO)) """
-                    Quantity net:  ${quantities.net.toPlainString()}
+                    Quantity net: ${quantities.net.toPlainString()}
                     History net: ${history.net.toPlainString()}
-                    Diff net (should be zero): ${diffNet.toPlainString()}
-                """.trimIndent() else ""
+                """.trimIndent() + "\n" + (
+                if (!(diffGross equalsComparing BigDecimal.ZERO))
+                    "Diff gross (should be zero): ${diffGross.toPlainString()}" + "\n"
+                else
+                    ""
+                ) + (
+                if (!(diffNet equalsComparing BigDecimal.ZERO))
+                    "Diff net (should be zero): ${diffNet.toPlainString()}"
+                else
+                    ""
                 )
             throw AssertionError(message)
         }
