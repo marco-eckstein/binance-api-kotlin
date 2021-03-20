@@ -16,6 +16,9 @@ interface Borrowing : Timestamped {
      */
     val principal: BigDecimal
 
+    /**
+     * E.g. CONFIRM, FAILED
+     */
     val status: String
 
     val fromId: String?

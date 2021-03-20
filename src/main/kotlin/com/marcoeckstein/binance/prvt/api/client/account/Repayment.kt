@@ -23,6 +23,9 @@ interface Repayment : Timestamped {
 
     val interest: BigDecimal
 
+    /**
+     * E.g. CONFIRM
+     */
     val status: String
 
     // It is unclear which types the following properties have, since they seem to always contain the same values:
