@@ -1,0 +1,8 @@
+complexity:
+  LongParameterList:
+    constructorThreshold: 12
+  TooManyFunctions:
+    thresholdInFiles: 40
+    thresholdInClasses: 40
+    thresholdInInterfaces: 40
+    ignoreOverridden: true

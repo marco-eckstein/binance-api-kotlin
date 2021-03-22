@@ -37,30 +37,9 @@
         <kotlin.compiler.jvmTarget>11</kotlin.compiler.jvmTarget>
         <kotlin.serialization.version>1.1.0</kotlin.serialization.version>
         <kotlin.code.style>official</kotlin.code.style>
+        <ktlint.version>0.41.0</ktlint.version>
+        <detekt.version>1.16.0</detekt.version>
         <junit.version>5.6.0</junit.version>
-        <!--
-        ktlint.disabled_rules:
-            filename:
-                Caught more precisely (with desired exceptions) with detekt.
-            import-ordering:
-                ktlint's order is not supported (yet) by IntelliJ.
-                See:
-                - https://github.com/pinterest/ktlint/issues/527
-                - https://youtrack.jetbrains.com/issue/KT-10974
-            no-wildcard-imports:
-                Not desired. We want them for Java statics and Enum members.
-            experimental:annotation:
-                Not desired.
-            experimental:multiline-if-else:
-                Not desired.
-        -->
-        <ktlint.disabled_rules>
-            filename,
-            import-ordering,
-            no-wildcard-imports,
-            experimental:annotation,
-            experimental:multiline-if-else
-        </ktlint.disabled_rules>
     </properties>
     <dependencies>
         <dependency>
@@ -194,29 +173,6 @@
                                     <arg value="--experimental"/>
                                     <arg value="--relative"/>
                                     <arg value="--verbose"/>
-                                    <arg value="--disabled_rules=${ktlint.disabled_rules}"/>
-                                    <arg value="--editorconfig=${basedir}/.editorconfig"/>
-                                </java>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>detekt</id>
-                        <phase>compile</phase>
-                        <configuration>
-                            <target name="detekt">
-                                <java taskname="detekt"
-                                    dir="${basedir}"
-                                    fork="true"
-                                    failonerror="true"
-                                    classname="io.gitlab.arturbosch.detekt.cli.Main"
-                                    classpathref="maven.plugin.classpath">
-                                    <arg value="--build-upon-default-config"/>
-                                    <arg value="--config"/>
-                                    <arg value="${basedir}/detekt-config.yml"/>
                                 </java>
                             </target>
                         </configuration>
@@ -229,14 +185,28 @@
                     <dependency>
                         <groupId>com.pinterest</groupId>
                         <artifactId>ktlint</artifactId>
-                        <version>0.40.0</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>io.gitlab.arturbosch.detekt</groupId>
-                        <artifactId>detekt-cli</artifactId>
-                        <version>1.15.0</version>
+                        <version>${ktlint.version}</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>com.github.ozsie</groupId>
+                <artifactId>detekt-maven-plugin</artifactId>
+                <version>${detekt.version}</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <buildUponDefaultConfig>true</buildUponDefaultConfig>
+                            <config>
+                                ${project.basedir}/detekt-base.yml,${project.basedir}/detekt-project.yml
+                            </config>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
