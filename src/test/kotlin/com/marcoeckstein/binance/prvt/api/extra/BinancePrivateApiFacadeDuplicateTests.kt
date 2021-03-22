@@ -1,7 +1,6 @@
 package com.marcoeckstein.binance.prvt.api.extra
 
 import com.marcoeckstein.binance.prvt.api.client.account.WithdrawDirection
-import com.marcoeckstein.binance.prvt.api.config
 import com.marcoeckstein.binance.prvt.api.privateApi
 import io.kotest.matchers.collections.shouldBeSameSizeAs
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -12,8 +11,6 @@ import org.junit.jupiter.params.provider.MethodSource
 class BinancePrivateApiFacadeDuplicateTests {
 
     companion object {
-
-        private val startTime = config.accountStartTime
 
         @JvmStatic
         val calls = listOf<BinancePrivateApiFacade.() -> List<Any>>(

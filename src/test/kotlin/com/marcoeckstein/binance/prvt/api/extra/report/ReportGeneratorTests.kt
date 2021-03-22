@@ -1,6 +1,5 @@
 package com.marcoeckstein.binance.prvt.api.extra.report
 
-import com.marcoeckstein.binance.prvt.api.Config
 import com.marcoeckstein.binance.prvt.api.privateApi
 import com.marcoeckstein.binance.prvt.api.publicApi
 import com.marcoeckstein.klib.java.math.equalsComparing
@@ -14,8 +13,6 @@ import java.math.BigDecimal
 class ReportGeneratorTests {
 
     companion object {
-
-        private val config = Config()
 
         private val reportGenerator = ReportGenerator(publicApi, privateApi)
 
