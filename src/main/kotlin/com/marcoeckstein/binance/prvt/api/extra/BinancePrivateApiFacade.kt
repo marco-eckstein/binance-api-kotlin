@@ -38,6 +38,7 @@ import com.marcoeckstein.binance.prvt.api.client.account.request.TradeHistoryQue
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
+@Suppress("TooManyFunctions")
 class BinancePrivateApiFacade(
     private val client: BinancePrivateApiRestClient,
     private val defaultStartTime: Instant,
