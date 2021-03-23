@@ -1,9 +1,9 @@
 # binance-private-api-kotlin
 
 [![Actions Status](
-https://github.com/marco-eckstein/binance-private-api-kotlin/workflows/Java%20CI%20with%20Maven/badge.svg
+  https://github.com/marco-eckstein/binance-private-api-kotlin/workflows/Java%20CI%20with%20Maven/badge.svg
 )](
-https://github.com/marco-eckstein/binance-private-api-kotlin/actions?query=workflow%3A"Java+CI+with+Maven"
+  https://github.com/marco-eckstein/binance-private-api-kotlin/actions?query=workflow%3A"Java+CI+with+Maven"
 )
 
 Unofficial client for the undocumented private Binance REST API. Implemented in Kotlin, usable from any JVM
