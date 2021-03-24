@@ -5,15 +5,15 @@
 >
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.marcoeckstein</groupId>
-    <artifactId>binance-private-api-kotlin</artifactId>
+    <artifactId>binance-api-kotlin</artifactId>
     <version>0.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>binance-private-api-kotlin</name>
+    <name>binance-api-kotlin</name>
     <description>
-        Unofficial client for the undocumented private Binance REST API.
+        Unofficial client for selected endpoints of the public and the undocumented private Binance REST API.
         Implemented in Kotlin, usable from any JVM language including Java.
     </description>
-    <url>https://github.com/marco-eckstein/binance-private-api-kotlin</url>
+    <url>https://github.com/marco-eckstein/binance-api-kotlin</url>
     <inceptionYear>2021</inceptionYear>
     <licenses>
         <license>
@@ -23,13 +23,13 @@
     </licenses>
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/marco-eckstein/binance-private-api-kotlin/issues</url>
+        <url>https://github.com/marco-eckstein/binance-api-kotlin/issues</url>
     </issueManagement>
     <scm>
-        <connection>scm:git:https://github.com/marco-eckstein/binance-private-api-kotlin</connection>
-        <developerConnection>scm:git:https://github.com/marco-eckstein/binance-private-api-kotlin
+        <connection>scm:git:https://github.com/marco-eckstein/binance-api-kotlin</connection>
+        <developerConnection>scm:git:https://github.com/marco-eckstein/binance-api-kotlin
         </developerConnection>
-        <url>https://github.com/marco-eckstein/binance-private-api-kotlin</url>
+        <url>https://github.com/marco-eckstein/binance-api-kotlin</url>
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

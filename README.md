@@ -1,48 +1,56 @@
-# binance-private-api-kotlin
+# binance-api-kotlin
 
 [![Actions Status](
-  https://github.com/marco-eckstein/binance-private-api-kotlin/workflows/Java%20CI%20with%20Maven/badge.svg
+  https://github.com/marco-eckstein/binance-api-kotlin/workflows/Java%20CI%20with%20Maven/badge.svg
 )](
-  https://github.com/marco-eckstein/binance-private-api-kotlin/actions?query=workflow%3A"Java+CI+with+Maven"
+  https://github.com/marco-eckstein/binance-api-kotlin/actions?query=workflow%3A"Java+CI+with+Maven"
 )
 
-Unofficial client for the undocumented private Binance REST API. Implemented in Kotlin, usable from any JVM
-language including Java.
+Unofficial client for selected endpoints of the public and the undocumented private Binance REST API.
+Implemented in Kotlin, usable from any JVM language including Java.
 
 ## Problem: Incomplete Binance public API and website
 
-You can access some of your [Binance](https://www.binance.com/en) data via the
+You can access most of your [Binance](https://www.binance.com/en) data via the
 [official REST APIs](https://github.com/binance)
-(also available [for the JVM](https://github.com/binance-exchange/binance-java-api)). On their website, you can
+(also available [for the JVM](https://github.com/binance-exchange/binance-java-api)).On their website, you can
 also download some of your data as `.xlsx` or `.csv` files.
 
 However, neither of these methods allows you to access all your data that is essential for using a third-party
 tool to calculate portfolio performance or taxes. E.g., see the
-[limitations listed by CoinTracking](https://cointracking.info/import/binance/index.php).
+[limitations listed by CoinTracking](
+  https://cointracking.freshdesk.com/en/support/solutions/articles/29000025791
+).
+
+The [JVM client](https://github.com/binance-exchange/binance-java-api) is incomplete ad has bugs.
 
 Furthermore, downloading export files from the website is very tedious, because you have to navigate through the
 confusing site structure to access multiple cumbersome menus which finally allow you to download multiple export
 files one by one.
 
-## Solution: Binance private API
+## Solution (a): Binance private API
 
 The [Binance website](https://www.binance.com/en) is a
 [single-page application](<https://en.wikipedia.org/wiki/Single-page_application>) that uses a REST API
-different to the official public REST API. The endpoint URLs contain the substring `private`. Using a browser's
-developer tools, they could be reverse-engineered to create this project, an incomplete implementation of this
-private API. The used programming language is
+different to the official public REST API. The endpoint URLs contain the substring `private` or `friendly`.
+Using a browser's developer tools, they could be reverse-engineered to create this project,
+an incomplete implementation of this private API. The used programming language is
 [Kotlin](https://kotlinlang.org/), a relatively new, very readable and clean language that can run on the JVM (
 Java Virtual Machine) platform. Therefore, it can be used from Kotlin, Java and other JVM languages.
 
+## Solution (b): Binance public API
+
+I am currently implementing a client for some public endpoints as well.
+
 ## Extras
 
-In addition to the basic implementation of the private REST API, this project also offers some extras that make
+In addition to the basic implementation of the REST APIs, this project also offers some extras that make
 it much easier to use it:
 
 - Most API endpoints limit the time range of a query to a three months range.
-  `BinancePrivateApiFacade` transparently splits a a query with a large time range into multiple queries.
+  `BinanceApiFacade` transparently splits a a query with a large time range into multiple queries.
 - Most API endpoints limit the number of items (e.g. `Trade`) in a result.
-  `BinancePrivateApiFacade` transparently takes care of paging.
+  `BinanceApiFacade` transparently takes care of paging.
 - Extension functions allow you to derive computed properties from result items
   that are not explicitly contained.
 - You can create reports that are based on your current held asset quantities
@@ -53,7 +61,7 @@ it much easier to use it:
 ```kotlin
 val curlAddressPosix = "..." // See below
 val client = BinancePrivateApiRestClientFactory.newInstance(curlAddressPosix).newRestClient()
-val facade = BinancePrivateApiFacade(client)
+val facade = BinanceApiFacade(client)
 val startTime = 
     LocalDate.of(2020, 1, 1)
         .atStartOfDay(ZoneOffset.UTC)
@@ -95,7 +103,7 @@ wait period if you want to.
 
 Regarding timestamps of result items (e.g. `IsolatedMarginBorrowing.timestamp`) and `startTime`/`endTime` of
 queries, the Binance private REST API is very inconsistent, unfortunately.
-`BinancePrivateApiFacade` handles most of these issues transparently for you, but you should still be aware
+`BinanceApiFacade` handles most of these issues transparently for you, but you should still be aware
 of them, especially if you want to understand the source code.
 
 <table>
@@ -144,7 +152,7 @@ of them, especially if you want to understand the source code.
             as parameter that will be translated to <code>startTime</code> and <code>endTime</code>.
           </li>
           <li>
-            When <code>BinancePrivateApiFacade</code> transparently handles time interval splitting,
+            When <code>BinanceApiFacade</code> transparently handles time interval splitting,
             inclusiveness/exclusiveness is respected.
           </li>
         </ul>
@@ -163,7 +171,7 @@ of them, especially if you want to understand the source code.
             too high, you will get an exception. This prevents results that may have been confusing for you.
           </li>
           <li>
-            When <code>BinancePrivateApiFacade</code> transparently handles time interval splitting,
+            When <code>BinanceApiFacade</code> transparently handles time interval splitting,
             the resolution is respected.
           </li>
         </ul>
@@ -220,4 +228,5 @@ use `config.properties.template` as a template and rename it. It expects the fol
 
 ### Roadmap
 
+- Public endpoints
 - CSV export

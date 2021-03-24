@@ -15,4 +15,4 @@
 
 ### Custom ###
 config.properties
-src/main/kotlin/com/marcoeckstein/binance/prvt/api/Main.kt
+src/main/kotlin/com/marcoeckstein/binance/api/Main.kt
