@@ -1,14 +1,14 @@
 package com.marcoeckstein.binance.prvt.api.extra.report
 
 import com.binance.api.client.BinanceApiRestClient
-import com.marcoeckstein.binance.prvt.api.extra.BinancePrivateApiFacade
+import com.marcoeckstein.binance.prvt.api.extra.BinanceRestApiFacade
 import com.marcoeckstein.binance.prvt.api.extra.extensions.assets
 import com.marcoeckstein.binance.prvt.api.extra.extensions.getAllAssetsNames
 import java.math.BigDecimal
 
 class ReportGenerator(
     private val publicApi: BinanceApiRestClient,
-    private val privateApi: BinancePrivateApiFacade,
+    private val privateApi: BinanceRestApiFacade,
 ) {
 
     fun getAssetQuantitiesReports(): Map<String, AssetQuantitiesReport> {

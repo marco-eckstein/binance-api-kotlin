@@ -13,7 +13,7 @@ class BinancePrivateApiFacadeDuplicateTests {
     companion object {
 
         @JvmStatic
-        val calls = listOf<BinancePrivateApiFacade.() -> List<Any>>(
+        val calls = listOf<BinanceRestApiFacade.() -> List<Any>>(
             { getFiatDepositAndWithdrawHistory(WithdrawDirection.DEPOSIT) },
             { getFiatDepositAndWithdrawHistory(WithdrawDirection.WITHDRAW) },
             { getOrderHistory() },
@@ -31,7 +31,7 @@ class BinancePrivateApiFacadeDuplicateTests {
 
     @ParameterizedTest
     @MethodSource("getCalls")
-    fun `result list does not have duplicated`(call: BinancePrivateApiFacade.() -> List<Any>) {
+    fun `result list does not have duplicated`(call: BinanceRestApiFacade.() -> List<Any>) {
         val resultList = privateApi.call()
         resultList shouldBeSameSizeAs resultList.distinct()
     }
