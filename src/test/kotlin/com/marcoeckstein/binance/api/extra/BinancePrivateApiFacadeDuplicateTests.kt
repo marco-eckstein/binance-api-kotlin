@@ -1,7 +1,7 @@
 package com.marcoeckstein.binance.api.extra
 
 import com.marcoeckstein.binance.api.client.prvt.account.WithdrawDirection
-import com.marcoeckstein.binance.api.privateApi
+import com.marcoeckstein.binance.api.facade
 import io.kotest.matchers.collections.shouldBeSameSizeAs
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.params.ParameterizedTest
@@ -32,7 +32,7 @@ class BinancePrivateApiFacadeDuplicateTests {
     @ParameterizedTest
     @MethodSource("getCalls")
     fun `result list does not have duplicated`(call: BinanceRestApiFacade.() -> List<Any>) {
-        val resultList = privateApi.call()
+        val resultList = facade.call()
         resultList shouldBeSameSizeAs resultList.distinct()
     }
 }

@@ -7,10 +7,9 @@ import com.marcoeckstein.binance.api.client.prvt.account.IsolatedMarginAccountPo
 import com.marcoeckstein.binance.api.client.prvt.account.Order
 import com.marcoeckstein.binance.api.client.prvt.account.Trade
 import com.marcoeckstein.binance.api.extra.extensions.assets
-import com.marcoeckstein.binance.api.extra.extensions.getAllAssetsNames
 import com.marcoeckstein.binance.api.extra.extensions.lockedAmount
-import com.marcoeckstein.binance.api.privateApi
-import com.marcoeckstein.binance.api.publicApi
+import com.marcoeckstein.binance.api.facade
+import com.marcoeckstein.binance.api.officialClient
 import io.kotest.matchers.comparables.shouldBeEqualComparingTo
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -26,30 +25,30 @@ class BinancePrivateApiFacadeConsistencyTests {
     companion object {
 
         @JvmStatic
-        val assets: List<String> by lazy { publicApi.getAllAssetsNames() }
+        val assets: List<String> by lazy { facade.getAllCoinsInformation().map { it.coin } }
 
         @JvmStatic
         val tradesFromPublicApi: List<com.binance.api.client.domain.account.Trade> by lazy {
-            trades.map { it.symbol }.distinct().flatMap { publicApi.getMyTrades(it) }
+            trades.map { it.symbol }.distinct().flatMap { officialClient.getMyTrades(it) }
         }
 
-        val spotAccountBalances: List<AssetBalance> by lazy { publicApi.getAccount().balances }
+        val spotAccountBalances: List<AssetBalance> by lazy { officialClient.getAccount().balances }
 
         val isolatedMarginAccountDetails: List<IsolatedMarginAccountDetail> by lazy {
-            privateApi.getIsolatedMarginAccountDetails()
+            facade.getIsolatedMarginAccountDetails()
         }
 
         val isolatedMarginAccountPositions: List<IsolatedMarginAccountPosition> by lazy {
-            privateApi.getIsolatedMarginAccountPositions()
+            facade.getIsolatedMarginAccountPositions()
         }
 
-        val openOrdersSpot: List<Order> by lazy { privateApi.getOpenOrders(AccountType.SPOT) }
+        val openOrdersSpot: List<Order> by lazy { facade.getOpenOrders(AccountType.SPOT) }
 
         val openOrdersIsolatedMargin: List<Order> by lazy {
-            privateApi.getOpenOrders(AccountType.ISOLATED_MARGIN)
+            facade.getOpenOrders(AccountType.ISOLATED_MARGIN)
         }
 
-        val trades: List<Trade> by lazy { privateApi.getTradeHistory() }
+        val trades: List<Trade> by lazy { facade.getTradeHistory() }
     }
 
     @ParameterizedTest

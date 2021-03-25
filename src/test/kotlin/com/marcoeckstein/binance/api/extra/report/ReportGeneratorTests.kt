@@ -1,7 +1,6 @@
 package com.marcoeckstein.binance.api.extra.report
 
-import com.marcoeckstein.binance.api.privateApi
-import com.marcoeckstein.binance.api.publicApi
+import com.marcoeckstein.binance.api.facade
 import com.marcoeckstein.klib.java.math.equalsComparing
 import com.marcoeckstein.klib.java.math.notEqualsComparing
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -14,7 +13,7 @@ class ReportGeneratorTests {
 
     companion object {
 
-        private val reportGenerator = ReportGenerator(publicApi, privateApi)
+        private val reportGenerator = ReportGenerator(facade)
 
         @JvmStatic
         val assetQuantitiesReports: Map<String, AssetQuantitiesReport> by lazy {

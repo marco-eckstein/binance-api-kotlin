@@ -35,38 +35,44 @@ import com.marcoeckstein.binance.api.client.prvt.account.request.OrderHistoryQue
 import com.marcoeckstein.binance.api.client.prvt.account.request.PagingQueryImpl
 import com.marcoeckstein.binance.api.client.prvt.account.request.PaymentHistoryQuery
 import com.marcoeckstein.binance.api.client.prvt.account.request.TradeHistoryQuery
+import com.marcoeckstein.binance.api.client.public.BinancePublicApiRestClient
+import com.marcoeckstein.binance.api.client.public.CoinInfo
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 class BinanceRestApiFacade(
-    private val client: BinancePrivateApiRestClient,
+    private val publicClient: BinancePublicApiRestClient,
+    private val privateClient: BinancePrivateApiRestClient,
     private val defaultStartTime: Instant,
 ) : BinanceApiFacade {
 
+    fun getAllCoinsInformation(): List<CoinInfo> =
+        publicClient.getAllCoinsInformation()
+
     fun getSpotAccountBalances(): List<AssetBalance> =
-        client.getSpotAccountBalances(AssetBalanceQuery(needBtcValuation = false))
+        privateClient.getSpotAccountBalances(AssetBalanceQuery(needBtcValuation = false))
 
     fun getIsolatedMarginAccountDetails(): List<IsolatedMarginAccountDetail> =
-        client.getIsolatedMarginAccountDetails()
+        privateClient.getIsolatedMarginAccountDetails()
 
     fun getIsolatedMarginAccountPositions(): List<IsolatedMarginAccountPosition> =
-        client.getIsolatedMarginAccountPositions()
+        privateClient.getIsolatedMarginAccountPositions()
 
     fun getOpenOrders(accountType: AccountType): List<Order> =
-        client.getOpenOrders(accountType)
+        privateClient.getOpenOrders(accountType)
 
     fun getFlexibleSavingsPositions(): List<FlexibleSavingsPosition> =
         executeWithPaging(PagingQueryImpl(pageSize = 50)) {
-            client.getFlexibleSavingsPositions(pageIndex = it.pageIndex, pageSize = it.pageSize)
+            privateClient.getFlexibleSavingsPositions(pageIndex = it.pageIndex, pageSize = it.pageSize)
         }
 
     fun getLockedStakingPositions(): List<LockedStakingPosition> =
         executeWithPaging(PagingQueryImpl(pageSize = 200)) {
-            client.getLockedStakingPositions(pageIndex = it.pageIndex, pageSize = it.pageSize)
+            privateClient.getLockedStakingPositions(pageIndex = it.pageIndex, pageSize = it.pageSize)
         }
 
     fun getOpenOrders(query: OpenOrdersQuery): List<Order> =
-        client.getOpenOrders(query)
+        privateClient.getOpenOrders(query)
 
     override fun getFiatDepositAndWithdrawHistory(
         direction: WithdrawDirection
@@ -78,19 +84,19 @@ class BinanceRestApiFacade(
         timeRange: Range<Instant>
     ): List<FiatDepositAndWithdrawHistoryEntry> {
         val query = FiatDepositAndWithdrawHistoryQuery(direction, timeRange = timeRange)
-        return executeWithPaging(query.splitPeriod(), client::getFiatDepositAndWithdrawHistory)
+        return executeWithPaging(query.splitPeriod(), privateClient::getFiatDepositAndWithdrawHistory)
     }
 
     fun getFiatDepositAndWithdrawHistory(
         query: FiatDepositAndWithdrawHistoryQuery
     ): List<FiatDepositAndWithdrawHistoryEntry> =
-        executeWithPaging(query, client::getFiatDepositAndWithdrawHistory)
+        executeWithPaging(query, privateClient::getFiatDepositAndWithdrawHistory)
 
     override fun getPaymentHistory(paymentType: PaymentType): List<Payment> =
         getPaymentHistory(PaymentHistoryQuery(type = paymentType))
 
     fun getPaymentHistory(query: PaymentHistoryQuery): List<Payment> =
-        executeWithPaging(query, client::getPaymentHistory)
+        executeWithPaging(query, privateClient::getPaymentHistory)
 
     fun getOpenOrders(): List<Order> {
         val query = OpenOrdersQuery(AccountType.SPOT)
@@ -99,7 +105,7 @@ class BinanceRestApiFacade(
             query.copy(accountType = AccountType.CROSS_MARGIN),
             query.copy(accountType = AccountType.ISOLATED_MARGIN)
         )
-        return queries.flatMap(client::getOpenOrders) // no paging
+        return queries.flatMap(privateClient::getOpenOrders) // no paging
     }
 
     override fun getOrderHistory(accountType: AccountType): List<Order> =
@@ -111,11 +117,11 @@ class BinanceRestApiFacade(
             timeRange = timeRange,
             hideCancel = false
         )
-        return executeWithPaging(query.splitPeriod(), client::getOrderHistory)
+        return executeWithPaging(query.splitPeriod(), privateClient::getOrderHistory)
     }
 
     fun getOrderHistory(query: OrderHistoryQuery): List<Order> =
-        executeWithPaging(query, client::getOrderHistory)
+        executeWithPaging(query, privateClient::getOrderHistory)
 
     override fun getTradeHistory(accountType: AccountType): List<Trade> =
         getTradeHistory(defaultTimeRange, accountType)
@@ -125,103 +131,103 @@ class BinanceRestApiFacade(
             accountType = accountType,
             timeRange = timeRange
         )
-        return executeWithPaging(query.splitPeriod(), client::getTradeHistory)
+        return executeWithPaging(query.splitPeriod(), privateClient::getTradeHistory)
     }
 
     fun getTradeHistory(query: TradeHistoryQuery): List<Trade> =
-        executeWithPaging(query, client::getTradeHistory)
+        executeWithPaging(query, privateClient::getTradeHistory)
 
     override fun getDistributionHistory(): List<Distribution> =
         getDistributionHistory(defaultTimeRange)
 
     fun getDistributionHistory(timeRange: Range<Instant>): List<Distribution> {
         val query = DistributionHistoryQuery(timeRange = timeRange)
-        return executeWithPaging(query.splitPeriod(), client::getDistributionHistory)
+        return executeWithPaging(query.splitPeriod(), privateClient::getDistributionHistory)
     }
 
     fun getDistributionHistory(query: DistributionHistoryQuery): List<Distribution> =
-        executeWithPaging(query, client::getDistributionHistory)
+        executeWithPaging(query, privateClient::getDistributionHistory)
 
     override fun getFlexibleSavingsInterestHistory(): List<FlexibleSavingsInterest> =
         getFlexibleSavingsInterestHistory(defaultTimeRange)
 
     fun getFlexibleSavingsInterestHistory(timeRange: Range<Instant>): List<FlexibleSavingsInterest> {
         val query = FlexibleSavingsInterestHistoryQuery(timeRange = timeRange)
-        return executeWithPaging(query.splitPeriod(), client::getFlexibleSavingsInterestHistory)
+        return executeWithPaging(query.splitPeriod(), privateClient::getFlexibleSavingsInterestHistory)
     }
 
     fun getFlexibleSavingsInterestHistory(
         query: FlexibleSavingsInterestHistoryQuery
     ): List<FlexibleSavingsInterest> =
-        executeWithPaging(query, client::getFlexibleSavingsInterestHistory)
+        executeWithPaging(query, privateClient::getFlexibleSavingsInterestHistory)
 
     override fun getLockedStakingInterestHistory(): List<LockedStakingInterest> =
         getLockedStakingInterestHistory(defaultTimeRange)
 
     fun getLockedStakingInterestHistory(timeRange: Range<Instant>): List<LockedStakingInterest> {
         val query = LockedStakingInterestHistoryQuery(timeRange = timeRange)
-        return executeWithPaging(query.splitPeriod(), client::getLockedStakingInterestHistory)
+        return executeWithPaging(query.splitPeriod(), privateClient::getLockedStakingInterestHistory)
     }
 
     fun getLockedStakingInterestHistory(query: LockedStakingInterestHistoryQuery): List<LockedStakingInterest> =
-        executeWithPaging(query, client::getLockedStakingInterestHistory)
+        executeWithPaging(query, privateClient::getLockedStakingInterestHistory)
 
     override fun getIsolatedMarginBorrowingHistory(): List<IsolatedMarginBorrowing> =
         getIsolatedMarginBorrowingHistory(defaultTimeRange)
 
     fun getIsolatedMarginBorrowingHistory(timeRange: Range<Instant>): List<IsolatedMarginBorrowing> {
         val query = HistoryQuery(timeRange = timeRange)
-        return executeWithPaging(query.splitPeriod(), client::getIsolatedMarginBorrowingHistory)
+        return executeWithPaging(query.splitPeriod(), privateClient::getIsolatedMarginBorrowingHistory)
     }
 
     fun getIsolatedMarginBorrowingHistory(query: HistoryQuery): List<IsolatedMarginBorrowing> =
-        executeWithPaging(query, client::getIsolatedMarginBorrowingHistory)
+        executeWithPaging(query, privateClient::getIsolatedMarginBorrowingHistory)
 
     override fun getIsolatedMarginRepaymentHistory(): List<IsolatedMarginRepayment> =
         getIsolatedMarginRepaymentHistory(defaultTimeRange)
 
     fun getIsolatedMarginRepaymentHistory(timeRange: Range<Instant>): List<IsolatedMarginRepayment> {
         val query = HistoryQuery(timeRange = timeRange)
-        return executeWithPaging(query.splitPeriod(), client::getIsolatedMarginRepaymentHistory)
+        return executeWithPaging(query.splitPeriod(), privateClient::getIsolatedMarginRepaymentHistory)
     }
 
     fun getIsolatedMarginRepaymentHistory(query: HistoryQuery): List<IsolatedMarginRepayment> =
-        executeWithPaging(query, client::getIsolatedMarginRepaymentHistory)
+        executeWithPaging(query, privateClient::getIsolatedMarginRepaymentHistory)
 
     override fun getIsolatedMarginTransferHistory(): List<IsolatedMarginTransfer> =
         getIsolatedMarginTransferHistory(defaultTimeRange)
 
     fun getIsolatedMarginTransferHistory(timeRange: Range<Instant>): List<IsolatedMarginTransfer> {
         val query = HistoryQuery(timeRange = timeRange)
-        return executeWithPaging(query.splitPeriod(), client::getIsolatedMarginTransferHistory)
+        return executeWithPaging(query.splitPeriod(), privateClient::getIsolatedMarginTransferHistory)
     }
 
     fun getIsolatedMarginTransferHistory(query: HistoryQuery): List<IsolatedMarginTransfer> =
-        executeWithPaging(query, client::getIsolatedMarginTransferHistory)
+        executeWithPaging(query, privateClient::getIsolatedMarginTransferHistory)
 
     override fun getIsolatedMarginInterestHistory(): List<IsolatedMarginInterest> =
         getIsolatedMarginInterestHistory(defaultTimeRange)
 
     fun getIsolatedMarginInterestHistory(timeRange: Range<Instant>): List<IsolatedMarginInterest> {
         val query = IsolatedMarginInterestHistoryQuery(timeRange = timeRange)
-        return executeWithPaging(query.splitPeriod(), client::getIsolatedMarginInterestHistory)
+        return executeWithPaging(query.splitPeriod(), privateClient::getIsolatedMarginInterestHistory)
     }
 
     fun getIsolatedMarginInterestHistory(
         query: IsolatedMarginInterestHistoryQuery
     ): List<IsolatedMarginInterest> =
-        executeWithPaging(query, client::getIsolatedMarginInterestHistory)
+        executeWithPaging(query, privateClient::getIsolatedMarginInterestHistory)
 
     override fun getIsolatedMarginRebateHistory(): List<IsolatedMarginRebate> =
         getIsolatedMarginRebateHistory(defaultTimeRange)
 
     fun getIsolatedMarginRebateHistory(timeRange: Range<Instant>): List<IsolatedMarginRebate> {
         val query = IsolatedMarginRebateHistoryQuery(timeRange = timeRange)
-        return executeWithPaging(query.splitPeriod(), client::getIsolatedMarginRebateHistory)
+        return executeWithPaging(query.splitPeriod(), privateClient::getIsolatedMarginRebateHistory)
     }
 
     fun getIsolatedMarginRebateHistory(query: IsolatedMarginRebateHistoryQuery): List<IsolatedMarginRebate> =
-        executeWithPaging(query, client::getIsolatedMarginRebateHistory)
+        executeWithPaging(query, privateClient::getIsolatedMarginRebateHistory)
 
     private val defaultTimeRange: Range<Instant>
         get() = Range.closedOpen(defaultStartTime, Instant.now().truncatedTo(ChronoUnit.SECONDS))

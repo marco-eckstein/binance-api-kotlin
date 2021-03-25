@@ -1,23 +1,20 @@
 package com.marcoeckstein.binance.api.extra.report
 
-import com.binance.api.client.BinanceApiRestClient
 import com.marcoeckstein.binance.api.extra.BinanceRestApiFacade
 import com.marcoeckstein.binance.api.extra.extensions.assets
-import com.marcoeckstein.binance.api.extra.extensions.getAllAssetsNames
 import java.math.BigDecimal
 
 class ReportGenerator(
-    private val publicApi: BinanceApiRestClient,
-    private val privateApi: BinanceRestApiFacade,
+    private val facade: BinanceRestApiFacade,
 ) {
 
     fun getAssetQuantitiesReports(): Map<String, AssetQuantitiesReport> {
-        val spotBalances = privateApi.getSpotAccountBalances()
-        val isolatedMarginDetails = privateApi.getIsolatedMarginAccountDetails()
-        val flexibleSavingsPositions = privateApi.getFlexibleSavingsPositions()
-        val lockedStakingPositions = privateApi.getLockedStakingPositions()
+        val spotBalances = facade.getSpotAccountBalances()
+        val isolatedMarginDetails = facade.getIsolatedMarginAccountDetails()
+        val flexibleSavingsPositions = facade.getFlexibleSavingsPositions()
+        val lockedStakingPositions = facade.getLockedStakingPositions()
 
-        return publicApi.getAllAssetsNames().map { asset ->
+        return facade.getAllCoinsInformation().map { it.coin }.map { asset ->
             asset to AssetQuantitiesReport(
                 asset = asset,
                 spotFree = spotBalances.singleOrNull { it.asset == asset }?.free ?: BigDecimal.ZERO,
@@ -41,16 +38,16 @@ class ReportGenerator(
     }
 
     fun getAssetHistoryReports(): Map<String, AssetHistoryReport> {
-        val payments = privateApi.getPaymentHistory()
-        val trades = privateApi.getTradeHistory()
-        val distributions = privateApi.getDistributionHistory()
-        val flexibleSavingsInterests = privateApi.getFlexibleSavingsInterestHistory()
-        val lockedStakingInterests = privateApi.getLockedStakingInterestHistory()
-        val isolatedMarginBorrowings = privateApi.getIsolatedMarginBorrowingHistory()
-        val isolatedMarginRepayments = privateApi.getIsolatedMarginRepaymentHistory()
-        val isolatedMarginInterests = privateApi.getIsolatedMarginInterestHistory()
-        val isolatedMarginRebates = privateApi.getIsolatedMarginRebateHistory()
-        return publicApi.getAllAssetsNames().map { asset ->
+        val payments = facade.getPaymentHistory()
+        val trades = facade.getTradeHistory()
+        val distributions = facade.getDistributionHistory()
+        val flexibleSavingsInterests = facade.getFlexibleSavingsInterestHistory()
+        val lockedStakingInterests = facade.getLockedStakingInterestHistory()
+        val isolatedMarginBorrowings = facade.getIsolatedMarginBorrowingHistory()
+        val isolatedMarginRepayments = facade.getIsolatedMarginRepaymentHistory()
+        val isolatedMarginInterests = facade.getIsolatedMarginInterestHistory()
+        val isolatedMarginRebates = facade.getIsolatedMarginRebateHistory()
+        return facade.getAllCoinsInformation().map { it.coin }.map { asset ->
             asset to AssetHistoryReport(
                 asset = asset,
                 payments = payments,
