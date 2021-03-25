@@ -2,7 +2,6 @@ package com.marcoeckstein.binance.api.extra.report
 
 import com.marcoeckstein.binance.api.facade
 import com.marcoeckstein.klib.java.math.equalsComparing
-import com.marcoeckstein.klib.java.math.notEqualsComparing
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -37,7 +36,11 @@ class ReportGeneratorTests {
         val history = assetHistoryReports.getValue(asset)
         val diffGross = quantities.gross - history.gross
         val diffNet = quantities.net - history.net
-        if (diffGross notEqualsComparing BigDecimal.ZERO || diffNet notEqualsComparing BigDecimal.ZERO) {
+        val errorMarginGross =
+            if (asset == "BNB") getBnbErrorMarginGross(quantities, history) else BigDecimal.ZERO
+        val errorMarginNet =
+            if (asset == "BNB") getBnbErrorMarginNet(quantities, history) else BigDecimal.ZERO
+        if (diffGross.abs() > errorMarginGross || diffNet.abs() > errorMarginNet) {
             val message = "Reports for $asset are not consistent.\n\n" +
                 quantities.toReportString() + "\n\n" +
                 history.toReportString() + "\n\n" + """
@@ -60,4 +63,10 @@ class ReportGeneratorTests {
             throw AssertionError(message)
         }
     }
+
+    private fun getBnbErrorMarginGross(quantities: AssetQuantitiesReport, history: AssetHistoryReport) =
+        (quantities.gross.abs() + history.gross.abs()) / BigDecimal.valueOf(10_000_000)
+
+    private fun getBnbErrorMarginNet(quantities: AssetQuantitiesReport, history: AssetHistoryReport) =
+        (quantities.net.abs() + history.net.abs()) / BigDecimal.valueOf(10_000_000)
 }
