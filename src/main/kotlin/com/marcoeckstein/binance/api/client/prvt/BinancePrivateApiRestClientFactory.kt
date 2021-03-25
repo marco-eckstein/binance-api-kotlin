@@ -1,15 +1,9 @@
 package com.marcoeckstein.binance.api.client.prvt
 
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.marcoeckstein.binance.api.lib.jvm.InstantAsEpochMilliSerializer
+import com.marcoeckstein.binance.api.client.ServiceFactory
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.contextual
-import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
 
 @ExperimentalSerializationApi
 class BinancePrivateApiRestClientFactory private constructor(
@@ -48,28 +42,15 @@ class BinancePrivateApiRestClientFactory private constructor(
         return newRestClient(okHttpClient)
     }
 
-    fun newRestClient(okHttpClient: OkHttpClient): BinancePrivateApiRestClient =
-        BinancePrivateApiRestClient(
+    fun newRestClient(okHttpClient: OkHttpClient): BinancePrivateApiRestClient {
+        val serviceFactory = ServiceFactory(okHttpClient)
+        return BinancePrivateApiRestClient(
             headers,
-            newRetrofit(okHttpClient, ExchangeApiV1Service.BaseUrl).create(ExchangeApiV1Service::class.java),
-            newRetrofit(okHttpClient, GatewayApiV1Service.BaseUrl).create(GatewayApiV1Service::class.java),
-            newRetrofit(okHttpClient, GatewayApiV3Service.BaseUrl).create(GatewayApiV3Service::class.java)
+            serviceFactory.newService(ExchangeApiV1Service.BaseUrl, ExchangeApiV1Service::class),
+            serviceFactory.newService(GatewayApiV1Service.BaseUrl, GatewayApiV1Service::class),
+            serviceFactory.newService(GatewayApiV3Service.BaseUrl, GatewayApiV3Service::class)
         )
-
-    private fun newRetrofit(client: OkHttpClient, baseUrl: String): Retrofit =
-        Retrofit.Builder()
-            .client(client)
-            .baseUrl(baseUrl)
-            .addConverterFactory(
-                Json {
-                    ignoreUnknownKeys = true
-                    encodeDefaults = true
-                    serializersModule = SerializersModule {
-                        contextual(InstantAsEpochMilliSerializer)
-                    }
-                }.asConverterFactory(MediaType.get("application/json"))
-            )
-            .build()
+    }
 
     companion object {
 
