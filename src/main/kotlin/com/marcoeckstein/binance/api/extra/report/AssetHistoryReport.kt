@@ -2,6 +2,7 @@ package com.marcoeckstein.binance.api.extra.report
 
 import com.binance.api.client.domain.OrderSide
 import com.marcoeckstein.binance.api.client.prvt.account.Distribution
+import com.marcoeckstein.binance.api.client.prvt.account.FiatDepositAndWithdrawHistoryEntry
 import com.marcoeckstein.binance.api.client.prvt.account.IsolatedMarginBorrowing
 import com.marcoeckstein.binance.api.client.prvt.account.IsolatedMarginInterest
 import com.marcoeckstein.binance.api.client.prvt.account.IsolatedMarginRebate
@@ -11,10 +12,13 @@ import com.marcoeckstein.binance.api.client.prvt.account.Trade
 import com.marcoeckstein.binance.api.client.prvt.account.earn.FlexibleSavingsInterest
 import com.marcoeckstein.binance.api.client.prvt.account.earn.LockedStakingInterest
 import com.marcoeckstein.binance.api.extra.extensions.cryptoCurrencyDelta
+import com.marcoeckstein.binance.api.extra.extensions.fiatCurrencyDelta
 import java.math.BigDecimal
 
 data class AssetHistoryReport(
     val asset: String,
+    val fiatDeposits: List<FiatDepositAndWithdrawHistoryEntry>,
+    val fiatWithdrawals: List<FiatDepositAndWithdrawHistoryEntry>,
     val payments: List<Payment>,
     val trades: List<Trade>,
     val distributions: List<Distribution>,
@@ -26,8 +30,19 @@ data class AssetHistoryReport(
     val isolatedMarginRebates: List<IsolatedMarginRebate>,
 ) {
 
+    val fiatBalance = fiatDeposits.filter { it.fiatCurrency == asset }.sumOf { it.amount } -
+        fiatWithdrawals.filter { it.fiatCurrency == asset }.sumOf { it.indicatedAmount }
+
     val paymentBalance =
-        payments.filter { it.status == "4" && it.cryptoCurrency == asset }.sumOf { it.cryptoCurrencyDelta }
+        payments
+            .filter { it.status == "4" }
+            .sumOf {
+                when (asset) {
+                    it.fiatCurrency -> it.fiatCurrencyDelta
+                    it.cryptoCurrency -> it.cryptoCurrencyDelta
+                    else -> BigDecimal.ZERO
+                }
+            }
 
     val tradeBalance = trades.sumOf {
         when (asset) {
@@ -74,6 +89,7 @@ data class AssetHistoryReport(
         isolatedMarginInterests.filter { it.asset == asset }.sumOf { it.interest }
 
     val gross = listOf(
+        fiatBalance,
         paymentBalance,
         tradeBalance,
         distributionsTotal,
@@ -92,6 +108,7 @@ data class AssetHistoryReport(
 
     fun toReportString(): String = """
         = History =
+        Fiat balance: ${fiatBalance.toPlainString()}
         Payment balance (Buy crypto balance): ${paymentBalance.toPlainString()}
         Trade balance: ${tradeBalance.toPlainString()}
         Distribution: ${distributionsTotal.toPlainString()}

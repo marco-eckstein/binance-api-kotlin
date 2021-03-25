@@ -1,5 +1,6 @@
 package com.marcoeckstein.binance.api.extra.report
 
+import com.marcoeckstein.binance.api.client.prvt.account.WithdrawDirection
 import com.marcoeckstein.binance.api.extra.BinanceRestApiFacade
 import com.marcoeckstein.binance.api.extra.extensions.assets
 import java.math.BigDecimal
@@ -38,6 +39,8 @@ class ReportGenerator(
     }
 
     fun getAssetHistoryReports(): Map<String, AssetHistoryReport> {
+        val fiatDeposits = facade.getFiatDepositAndWithdrawHistory(WithdrawDirection.DEPOSIT)
+        val fiatWithdrawals = facade.getFiatDepositAndWithdrawHistory(WithdrawDirection.WITHDRAW)
         val payments = facade.getPaymentHistory()
         val trades = facade.getTradeHistory()
         val distributions = facade.getDistributionHistory()
@@ -50,6 +53,8 @@ class ReportGenerator(
         return facade.getAllCoinsInformation().map { it.coin }.map { asset ->
             asset to AssetHistoryReport(
                 asset = asset,
+                fiatDeposits = fiatDeposits,
+                fiatWithdrawals = fiatWithdrawals,
                 payments = payments,
                 trades = trades,
                 distributions = distributions,

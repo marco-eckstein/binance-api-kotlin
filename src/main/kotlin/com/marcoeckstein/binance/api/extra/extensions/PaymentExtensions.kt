@@ -6,3 +6,6 @@ import java.math.BigDecimal
 
 val Payment.cryptoCurrencyDelta: BigDecimal
     get() = if (type == PaymentType.BUY) obtainAmount else sourceAmount.negate()
+
+val Payment.fiatCurrencyDelta: BigDecimal
+    get() = if (type == PaymentType.SELL) obtainAmount else sourceAmount.negate()
