@@ -11,6 +11,7 @@ import com.marcoeckstein.binance.api.client.prvt.account.Payment
 import com.marcoeckstein.binance.api.client.prvt.account.Trade
 import com.marcoeckstein.binance.api.client.prvt.account.earn.FlexibleSavingsInterest
 import com.marcoeckstein.binance.api.client.prvt.account.earn.LockedStakingInterest
+import com.marcoeckstein.binance.api.extra.data.tokenSwaps
 import com.marcoeckstein.binance.api.extra.extensions.cryptoCurrencyDelta
 import com.marcoeckstein.binance.api.extra.extensions.fiatCurrencyDelta
 import java.math.BigDecimal
@@ -52,7 +53,21 @@ data class AssetHistoryReport(
         }
     }
 
-    val distributionsTotal = distributions.filter { it.asset == asset }.sumOf { it.amount }
+    val distributionsTotal = distributions.filter { it.asset == asset }.sumOf { it.amount } - swappedIn
+
+    val swappedIn: BigDecimal
+        get() {
+            val swap = tokenSwaps.singleOrNull { it.newCoin == asset } ?: return BigDecimal.ZERO
+            val swapDistribution = distributions.sortedBy { it.timestamp }.first { it.asset == asset }
+            return swapDistribution.amount
+        }
+
+    val swappedOut: BigDecimal
+        get() {
+            val swap = tokenSwaps.singleOrNull { it.oldCoin == asset } ?: return BigDecimal.ZERO
+            val swapDistribution = distributions.sortedBy { it.timestamp }.first { it.asset == swap.newCoin }
+            return swapDistribution.amount * swap.oldToNewRatio
+        }
 
     val flexibleSavingsInterestsTotal =
         flexibleSavingsInterests.filter { it.asset == asset }.sumOf { it.amount }
@@ -94,6 +109,8 @@ data class AssetHistoryReport(
         paymentBalance,
         tradeBalance,
         distributionsTotal,
+        swappedIn,
+        swappedOut.negate(),
         flexibleSavingsInterestsTotal,
         lockedStakingInterestsTotal,
         feeBalance,
@@ -112,7 +129,9 @@ data class AssetHistoryReport(
         Fiat balance: ${fiatBalance.toPlainString()}
         Payment balance (Buy crypto balance): ${paymentBalance.toPlainString()}
         Trade balance: ${tradeBalance.toPlainString()}
-        Distribution: ${distributionsTotal.toPlainString()}
+        Distribution (without token swaps): ${distributionsTotal.toPlainString()}
+        Swapped in: ${swappedIn.toPlainString()}
+        Swapped out: ${swappedOut.toPlainString()}
         Earned flexible savings interest: ${flexibleSavingsInterestsTotal.toPlainString()}
         Earned locked staking interests: ${lockedStakingInterestsTotal.toPlainString()}
         Fee balance : ${feeBalance.toPlainString()}
