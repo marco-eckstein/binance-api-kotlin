@@ -30,8 +30,8 @@ data class AssetHistoryReport(
     val isolatedMarginRebates: List<IsolatedMarginRebate>,
 ) {
 
-    val fiatBalance = fiatDeposits.filter { it.fiatCurrency == asset }.sumOf { it.amount } -
-        fiatWithdrawals.filter { it.fiatCurrency == asset }.sumOf { it.indicatedAmount }
+    val fiatBalance = fiatDeposits.filter { it.fiatCurrency == asset }.sumOf { it.indicatedAmount } -
+        fiatWithdrawals.filter { it.fiatCurrency == asset }.sumOf { it.amount }
 
     val paymentBalance =
         payments
@@ -60,7 +60,8 @@ data class AssetHistoryReport(
     val lockedStakingInterestsTotal =
         lockedStakingInterests.filter { it.asset == asset }.sumOf { it.interest }
 
-    val fees = trades.sumOf { if (asset == it.feeAsset) it.fee else BigDecimal.ZERO }
+    val fees = trades.sumOf { if (asset == it.feeAsset) it.fee else BigDecimal.ZERO } +
+        (fiatDeposits + fiatWithdrawals).filter { it.fiatCurrency == asset }.sumOf { it.totalFee }
 
     val isolatedMarginRebatesTotal =
         isolatedMarginRebates.filter { it.asset == asset }.sumOf { BigDecimal.valueOf(it.rebateAmount) }
