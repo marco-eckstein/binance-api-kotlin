@@ -77,11 +77,11 @@ class BinanceRestApiFacade(
     override fun getFiatDepositAndWithdrawHistory(
         direction: WithdrawDirection
     ): List<FiatDepositAndWithdrawHistoryEntry> =
-        getFiatDepositAndWithdrawHistory(direction, defaultTimeRange)
+        getFiatDepositAndWithdrawHistory(defaultTimeRange, direction)
 
     fun getFiatDepositAndWithdrawHistory(
-        direction: WithdrawDirection,
-        timeRange: Range<Instant>
+        timeRange: Range<Instant>,
+        direction: WithdrawDirection
     ): List<FiatDepositAndWithdrawHistoryEntry> {
         val query = FiatDepositAndWithdrawHistoryQuery(direction, timeRange = timeRange)
         return executeWithPaging(query.splitPeriod(), privateClient::getFiatDepositAndWithdrawHistory)
