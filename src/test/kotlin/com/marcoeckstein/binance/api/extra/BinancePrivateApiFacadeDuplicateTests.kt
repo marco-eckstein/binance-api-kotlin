@@ -20,7 +20,7 @@ class BinancePrivateApiFacadeDuplicateTests {
             { getTradeHistory() },
             { getDistributionHistory() },
             { getFlexibleSavingsInterestHistory() },
-            { getLockedStakingInterestHistory() },
+//            { getLockedStakingInterestHistory() }, Duplicates are possible.
             { getIsolatedMarginBorrowingHistory() },
             { getIsolatedMarginRepaymentHistory() },
             { getIsolatedMarginTransferHistory() },
