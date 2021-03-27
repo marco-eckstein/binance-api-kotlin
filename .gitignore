@@ -15,4 +15,5 @@
 
 ### Custom ###
 config.properties
-src/main/kotlin/com/marcoeckstein/binance/api/Main.kt
+src/main/kotlin/com/marcoeckstein/binance/api/Draft.kt
+export/

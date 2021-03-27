@@ -22,7 +22,9 @@ import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.api.Test
+import kotlin.io.path.ExperimentalPathApi
 
+@ExperimentalPathApi
 @ExperimentalSerializationApi
 class BinancePrivateApiFacadePeriodTests {
 

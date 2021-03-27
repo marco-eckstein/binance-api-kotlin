@@ -18,7 +18,9 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import kotlin.io.path.ExperimentalPathApi
 
+@ExperimentalPathApi
 @ExperimentalSerializationApi
 class BinancePrivateApiFacadeConsistencyTests {
 

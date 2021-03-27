@@ -6,7 +6,9 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.math.BigDecimal
+import kotlin.io.path.ExperimentalPathApi
 
+@ExperimentalPathApi
 @ExperimentalSerializationApi
 class ReportGeneratorTests {
 

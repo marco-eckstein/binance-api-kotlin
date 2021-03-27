@@ -95,6 +95,12 @@ class BinanceRestApiFacade(
     override fun getPaymentHistory(paymentType: PaymentType): List<Payment> =
         getPaymentHistory(PaymentHistoryQuery(type = paymentType))
 
+    fun getPaymentHistory(range: Range<Instant>): List<Payment> =
+        PaymentType.values().flatMap { getPaymentHistory(range, it) }.sortedBy { it.timestamp }
+
+    fun getPaymentHistory(range: Range<Instant>, paymentType: PaymentType): List<Payment> =
+        getPaymentHistory(paymentType).filter { range.contains(it.timestamp) }
+
     fun getPaymentHistory(query: PaymentHistoryQuery): List<Payment> =
         executeWithPaging(query, privateClient::getPaymentHistory)
 
@@ -167,10 +173,12 @@ class BinanceRestApiFacade(
     fun getLockedStakingInterestHistory(timeRange: Range<Instant>): List<LockedStakingInterest> {
         val query = LockedStakingInterestHistoryQuery(timeRange = timeRange)
         return executeWithPaging(query.splitPeriod(), privateClient::getLockedStakingInterestHistory)
+            .sortedBy { it.timestamp }
     }
 
     fun getLockedStakingInterestHistory(query: LockedStakingInterestHistoryQuery): List<LockedStakingInterest> =
         executeWithPaging(query, privateClient::getLockedStakingInterestHistory)
+            .sortedBy { it.timestamp }
 
     override fun getIsolatedMarginBorrowingHistory(): List<IsolatedMarginBorrowing> =
         getIsolatedMarginBorrowingHistory(defaultTimeRange)

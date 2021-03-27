@@ -2,4 +2,5 @@ apiKey=
 secret=
 curlAddressPosix=
 accountStartYear=
-accountStartMonth=
+accountStartMonth= NONE | BASIC | HEADERS | BODY
+exportDirectory=./export/

@@ -225,8 +225,3 @@ use `config.properties.template` as a template and rename it. It expects the fol
   extras, the official Java client is utilized internally.
 - `accountStartYear`, `accountStartMonth`\
   The year and month of your first transactions in your Binance account.
-
-### Roadmap
-
-- Public endpoints
-- CSV export

@@ -6,7 +6,9 @@ import io.kotest.matchers.collections.shouldBeSameSizeAs
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import kotlin.io.path.ExperimentalPathApi
 
+@ExperimentalPathApi
 @ExperimentalSerializationApi
 class BinancePrivateApiFacadeDuplicateTests {
 

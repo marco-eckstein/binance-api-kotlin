@@ -1,13 +1,19 @@
 package com.marcoeckstein.binance.api
 
 import com.marcoeckstein.binance.api.lib.jvm.InstantFactory
-import java.io.File
+import okhttp3.logging.HttpLoggingInterceptor
+import java.nio.file.Path
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.util.Properties
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.reader
 
-class Config {
+@ExperimentalPathApi
+class Config(
+    private val path: Path = Path.of("config.properties")
+) {
 
     val apiKey: String get() = properties.getProperty("apiKey")
 
@@ -23,8 +29,14 @@ class Config {
                 ZoneOffset.UTC
             ).truncatedTo(ChronoUnit.MILLIS)
 
+    val logLevel: HttpLoggingInterceptor.Level
+        get() = HttpLoggingInterceptor.Level.valueOf(properties.getProperty("logLevel"))
+
+    val exportDirectory: Path
+        get() = Path.of(properties.getProperty("exportDirectory"))
+
     private val properties: Properties by lazy {
-        File("config.properties").reader().use {
+        path.reader().use {
             Properties().apply { load(it) }
         }
     }
