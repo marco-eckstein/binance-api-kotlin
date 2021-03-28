@@ -11,6 +11,7 @@ import kotlin.io.path.ExperimentalPathApi
 @ExperimentalPathApi
 @ExperimentalSerializationApi
 fun main(args: Array<String>) {
+    @Suppress("ThrowingExceptionsWithoutMessageOrCause")
     val config = when {
         args.isEmpty() -> Config()
         args.size == 2 && args[0] == "--config" -> Config(Path.of(args[1]))
