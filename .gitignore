@@ -14,6 +14,6 @@
 .idea/sonarlint/
 
 ### Custom ###
-config.properties
-src/main/kotlin/com/marcoeckstein/binance/api/Draft.kt
-export/
+/config.properties
+/src/main/kotlin/com/marcoeckstein/binance/api/Draft.kt
+/export/
