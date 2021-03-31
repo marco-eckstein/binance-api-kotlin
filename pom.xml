@@ -217,6 +217,50 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.0.0</version>
+                <configuration>
+                    <thirdPartyFilename>LICENSES-DEPENDENCIES.txt</thirdPartyFilename>
+                    <excludedScopes>provided,test,system</excludedScopes>
+                    <licenseMerges>
+                        <licenseMerge>
+                            Apache License, Version 2.0|
+                            Apache 2|
+                            Apache-2.0|
+                            Apache 2.0|
+                            Apache License 2.0|
+                            The Apache 2.0 License|
+                            The Apache License, Version 2.0|
+                            The Apache Software License, Version 2.0
+                        </licenseMerge>
+                        <licenseMerge>
+                            MIT License|
+                            MIT|
+                            The MIT License
+                        </licenseMerge>
+                    </licenseMerges>
+                    <includedLicenses>
+                        Apache License, Version 2.0|
+                        MIT License
+                    </includedLicenses>
+                    <failOnBlacklist>true</failOnBlacklist>
+                </configuration>
+                <executions>
+                    <!--
+                        Due to an issue (https://stackoverflow.com/questions/55308956),
+                        warnings are expected..
+                     -->
+                    <execution>
+                        <id>add-third-party</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-third-party</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <repositories>
