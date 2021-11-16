@@ -73,7 +73,7 @@ data class AssetHistoryReport(
         flexibleSavingsInterests.filter { it.asset == asset }.sumOf { it.amount }
 
     val lockedStakingInterestsTotal =
-        lockedStakingInterests.filter { it.asset == asset }.sumOf { it.interest }
+        lockedStakingInterests.filter { it.asset == asset }.sumOf { it.amount }
 
     val fees = trades.sumOf { if (asset == it.feeAsset) it.fee else BigDecimal.ZERO } +
         (fiatDeposits + fiatWithdrawals).filter { it.fiatCurrency == asset }.sumOf { it.totalFee }

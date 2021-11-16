@@ -16,7 +16,7 @@ import java.time.Instant
 data class FiatDepositAndWithdrawHistoryEntry(
     val createTime: Instant,
     val updateTime: Instant,
-    val completedTime: Instant,
+    val completedTime: Instant?,
     /**
      * Aka order id
      */
@@ -42,8 +42,10 @@ data class FiatDepositAndWithdrawHistoryEntry(
     init {
         val calculatedAmount = indicatedAmount - totalFee
         require(amount == calculatedAmount) { "Expected amount == $calculatedAmount, but was $amount." }
-        require(createTime <= completedTime)
-        require(completedTime <= updateTime)
+        completedTime?.also {
+            require(createTime <= completedTime)
+            require(completedTime <= updateTime)
+        }
     }
 
     override val timestamp: Instant get() = createTime

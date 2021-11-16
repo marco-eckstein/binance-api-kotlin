@@ -16,20 +16,21 @@ data class IsolatedMarginInterestHistoryQuery(
     @SerialName("current")
     override val pageIndex: Int = 1,
     /**
-     * Seems to be unlimited.
+     * Max: 100 (Seems to be unlimited sometimes.)
      */
     @SerialName("size")
-    override val pageSize: Int? = Int.MAX_VALUE,
+    override val pageSize: Int? = 100,
     override val startTime: Instant? = null,
     /**
      * End time, inclusive
      */
     override val endTime: Instant? = null,
+    val archived: Boolean? = true,
 ) : PagingQuery<IsolatedMarginInterestHistoryQuery>, PeriodQuery<IsolatedMarginInterestHistoryQuery> {
 
     constructor(
         pageIndex: Int = 1,
-        pageSize: Int? = Int.MAX_VALUE,
+        pageSize: Int? = 100,
         timeRange: Range<Instant>,
     ) : this(
         pageIndex = pageIndex,

@@ -26,6 +26,19 @@ internal object BigDecimalAsPlainStringSerializer : KSerializer<BigDecimal> {
         BigDecimal(decoder.decodeString())
 }
 
+internal object IntAsStringSerializer : KSerializer<Int> {
+
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor(IntAsStringSerializer::class.simpleName!!, PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: Int) {
+        encoder.encodeString(value.toString())
+    }
+
+    override fun deserialize(decoder: Decoder): Int =
+        decoder.decodeString().toInt()
+}
+
 internal object InstantAsEpochMilliSerializer : KSerializer<Instant> {
 
     override val descriptor: SerialDescriptor =

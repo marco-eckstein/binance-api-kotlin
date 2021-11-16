@@ -58,9 +58,9 @@ data class Payment(
      */
     val payType: String,
     val rail: String,
-    val quoteId: String,
+    val quoteId: String?,
     val userId: String,
-    val email: String,
+    val email: String?,
     val enableRecurring: Boolean? = null,
     // It is unclear which types the following properties have, since they seem to always contain the same values:
     // val mode: null,

@@ -1,6 +1,7 @@
 package com.marcoeckstein.binance.api.extra.export
 
 import com.google.common.collect.Range
+import com.marcoeckstein.binance.api.client.prvt.account.Distribution
 import com.marcoeckstein.binance.api.client.prvt.account.Timestamped
 import com.marcoeckstein.binance.api.client.prvt.account.earn.LockedStakingInterest
 import com.marcoeckstein.binance.api.extra.BinanceRestApiFacade
@@ -109,7 +110,7 @@ class HistoryExportWriter(
 
     @Suppress("TooGenericExceptionThrown")
     private fun validateItems(items: List<*>) {
-        items.filter { it !is LockedStakingInterest }.also {
+        items.filter { it !is LockedStakingInterest && it !is Distribution }.also {
             if (it.size != it.distinct().size) {
                 throw RuntimeException("There are duplicate items.")
             }

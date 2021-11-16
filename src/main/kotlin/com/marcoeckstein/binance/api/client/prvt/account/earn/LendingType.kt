@@ -21,4 +21,9 @@ enum class LendingType {
      * Aka savings trial fund
      */
     EXPERIENCE_COUPON,
+
+    /**
+     * Aka locked staking
+     */
+    STAKING,
 }

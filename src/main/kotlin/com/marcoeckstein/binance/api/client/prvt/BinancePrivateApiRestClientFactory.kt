@@ -48,7 +48,11 @@ class BinancePrivateApiRestClientFactory private constructor(
             headers,
             serviceFactory.newService(ExchangeApiV1Service.BaseUrl, ExchangeApiV1Service::class),
             serviceFactory.newService(GatewayApiV1Service.BaseUrl, GatewayApiV1Service::class),
-            serviceFactory.newService(GatewayApiV3Service.BaseUrl, GatewayApiV3Service::class)
+            serviceFactory.newService(GatewayApiV3Service.BaseUrl, GatewayApiV3Service::class),
+            serviceFactory.newService(FiatApiV1Service.BaseUrl, FiatApiV1Service::class),
+            serviceFactory.newService(AssetApiV1Service.BaseUrl, AssetApiV1Service::class),
+            serviceFactory.newService(EarnApiV1Service.BaseUrl, EarnApiV1Service::class),
+            serviceFactory.newService(MarginApiV1Service.BaseUrl, MarginApiV1Service::class),
         )
     }
 

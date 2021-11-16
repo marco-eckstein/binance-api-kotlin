@@ -21,6 +21,7 @@ import com.marcoeckstein.binance.api.client.prvt.account.Payment
 import com.marcoeckstein.binance.api.client.prvt.account.Trade
 import com.marcoeckstein.binance.api.client.prvt.account.earn.FlexibleSavingsInterest
 import com.marcoeckstein.binance.api.client.prvt.account.earn.FlexibleSavingsPosition
+import com.marcoeckstein.binance.api.client.prvt.account.earn.LendingType
 import com.marcoeckstein.binance.api.client.prvt.account.earn.LockedStakingInterest
 import com.marcoeckstein.binance.api.client.prvt.account.earn.LockedStakingPosition
 import com.marcoeckstein.binance.api.client.prvt.account.earn.request.FlexibleSavingsInterestHistoryQuery
@@ -43,6 +44,10 @@ class BinancePrivateApiRestClient internal constructor(
     private val exchangeApiV1Service: ExchangeApiV1Service,
     private val gatewayApiV1Service: GatewayApiV1Service,
     private val gatewayApiV3Service: GatewayApiV3Service,
+    private val fiatApiV1Service: FiatApiV1Service,
+    private val assetApiV1Service: AssetApiV1Service,
+    private val earnApiV1Service: EarnApiV1Service,
+    private val marginApiV1Service: MarginApiV1Service,
 ) {
 
     /**
@@ -259,12 +264,13 @@ class BinancePrivateApiRestClient internal constructor(
         query: IsolatedMarginInterestHistoryQuery
     ): List<IsolatedMarginInterest> =
         execute(
-            gatewayApiV1Service.getIsolatedMarginInterestHistory(
+            marginApiV1Service.getIsolatedMarginInterestHistory(
                 headers,
                 query.pageIndex,
                 query.pageSize,
                 query.startTime?.toEpochMilli(),
-                query.endTime?.toEpochMilli()
+                query.endTime?.toEpochMilli(),
+                query.archived,
             )
         )
 
@@ -272,12 +278,12 @@ class BinancePrivateApiRestClient internal constructor(
      * Get fiat deposit & withdraw history
      *
      * Web:
-     * - [Transaction History | Deposit & Withdraw | Cash](https://www.binance.com/en/my/wallet/history/withdraw-fiat)
+     * - [Transaction History | Fiat | Deposit & Withdraw](https://www.binance.com/en/my/wallet/history/withdraw-fiat)
      */
     fun getFiatDepositAndWithdrawHistory(
         query: FiatDepositAndWithdrawHistoryQuery
     ): List<FiatDepositAndWithdrawHistoryEntry> =
-        execute(gatewayApiV1Service.getFiatDepositAndWithdrawHistory(headers, query))
+        execute(fiatApiV1Service.getFiatDepositAndWithdrawHistory(headers, query))
 
     /**
      * Get distribution history
@@ -286,7 +292,7 @@ class BinancePrivateApiRestClient internal constructor(
      * - [Transaction History | Distribution | Fiat and Spot](https://www.binance.com/en/my/wallet/history/distribution)
      */
     fun getDistributionHistory(query: DistributionHistoryQuery): List<Distribution> =
-        execute(gatewayApiV1Service.getDistributionHistory(headers, query))
+        execute(assetApiV1Service.getDistributionHistory(headers, query))
 
     /**
      * Get payment history (aka buy crypto history)
@@ -295,19 +301,19 @@ class BinancePrivateApiRestClient internal constructor(
      * - [Buy Crypto History | Buy/Sell](https://www.binance.com/en/my/wallet/exchange/buysell-history)
      */
     fun getPaymentHistory(query: PaymentHistoryQuery): List<Payment> =
-        execute(gatewayApiV1Service.getPaymentHistory(headers, query))
+        execute(fiatApiV1Service.getPaymentHistory(headers, query))
 
     /**
      * Get flexible savings interest history
      *
      * Web:
-     * - [Earn History | Interest](https://www.binance.com/en/my/saving/history/interest)
+     * - [Earn History | Savings | Flexible | Interest ](https://www.binance.com/en/my/saving/history/savings)
      */
     fun getFlexibleSavingsInterestHistory(
         query: FlexibleSavingsInterestHistoryQuery
     ): List<FlexibleSavingsInterest> =
         execute(
-            gatewayApiV1Service.getFlexibleSavingsInterestHistory(
+            earnApiV1Service.getFlexibleSavingsInterestHistory(
                 headers,
                 query.pageIndex,
                 query.pageSize,
@@ -322,17 +328,18 @@ class BinancePrivateApiRestClient internal constructor(
      * Get locked staking interest history
      *
      * Web:
-     * - [Locked Staking History | Interest](https://www.binance.com/en/my/pos/history/interest)
+     * - [Earn History | Staking | Locked Staking | Interest](https://www.binance.com/en/my/saving/history/staking)
      */
     fun getLockedStakingInterestHistory(query: LockedStakingInterestHistoryQuery): List<LockedStakingInterest> =
         execute(
-            gatewayApiV1Service.getLockedStakingInterestHistory(
+            earnApiV1Service.getLockedStakingInterestHistory(
                 headers,
                 query.pageIndex,
                 query.pageSize,
                 query.asset,
                 query.startTime?.toEpochMilli(),
                 query.endTime?.toEpochMilli(),
+                LendingType.STAKING, // TODO: Evaluate if it makes sense to have this as part of the query
             )
         )
 
@@ -344,7 +351,7 @@ class BinancePrivateApiRestClient internal constructor(
      */
     fun getIsolatedMarginRebateHistory(query: IsolatedMarginRebateHistoryQuery): List<IsolatedMarginRebate> =
         execute(
-            gatewayApiV1Service.getIsolatedMarginRebateHistory(
+            marginApiV1Service.getIsolatedMarginRebateHistory(
                 headers,
                 query.pageIndex,
                 query.pageSize,
