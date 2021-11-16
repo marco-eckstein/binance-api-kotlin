@@ -22,7 +22,7 @@ tool to calculate portfolio performance or taxes. E.g., see the
   https://cointracking.freshdesk.com/en/support/solutions/articles/29000025791
 ).
 
-The [JVM client](https://github.com/binance-exchange/binance-java-api) is incomplete ad has bugs.
+The [JVM client](https://github.com/binance-exchange/binance-java-api) is incomplete and has bugs.
 
 Furthermore, downloading export files from the website is very tedious, because you have to navigate through the
 confusing site structure to access multiple cumbersome menus which finally allow you to download multiple export
