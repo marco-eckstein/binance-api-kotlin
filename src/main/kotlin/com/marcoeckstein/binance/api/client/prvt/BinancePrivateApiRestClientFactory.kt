@@ -13,12 +13,12 @@ class BinancePrivateApiRestClientFactory private constructor(
 
     private val headers: Map<String, String> =
         parseHeadersFromCurlAddressPosix(curlAddressPosix).filter {
-            sendRedundantHeaders || it.key in setOf(
+            sendRedundantHeaders || it.key.toLowerCase() in setOf(
                 "bnc-uuid",
                 "clienttype",
                 "csrftoken",
-                "Cookie",
-                "User-Agent"
+                "cookie",
+                "user-agent"
             )
         }
 
