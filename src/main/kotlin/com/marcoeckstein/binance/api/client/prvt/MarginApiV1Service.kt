@@ -8,6 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.HeaderMap
 import retrofit2.http.Query
 
+@Suppress("LongParameterList") // detekt
 internal interface MarginApiV1Service {
 
     @GET("private/isolated-margin/interest-history")

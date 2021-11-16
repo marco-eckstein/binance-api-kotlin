@@ -9,6 +9,7 @@ import retrofit2.http.GET
 import retrofit2.http.HeaderMap
 import retrofit2.http.Query
 
+@Suppress("LongParameterList") // detekt
 internal interface EarnApiV1Service {
 
     @GET("private/pos/union/getUserInterestRecord")
