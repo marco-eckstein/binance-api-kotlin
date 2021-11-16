@@ -20,7 +20,8 @@ internal interface EarnApiV1Service {
         @Query("asset") asset: String?,
         @Query("startTime") startTime: Long?,
         @Query("endTime") endTime: Long?,
-        @Query("lendingType") lendingType: LendingType?,
+        /** It seems that no other value than STAKING is ever used. */
+        @Query("lendingType") lendingType: LendingType? = LendingType.STAKING,
     ): Call<QueryResult1<LockedStakingInterest>>
 
     @GET("private/lending/union/interestHistory/list")

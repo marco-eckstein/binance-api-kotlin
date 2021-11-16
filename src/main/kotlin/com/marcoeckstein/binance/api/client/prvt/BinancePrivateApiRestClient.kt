@@ -21,7 +21,6 @@ import com.marcoeckstein.binance.api.client.prvt.account.Payment
 import com.marcoeckstein.binance.api.client.prvt.account.Trade
 import com.marcoeckstein.binance.api.client.prvt.account.earn.FlexibleSavingsInterest
 import com.marcoeckstein.binance.api.client.prvt.account.earn.FlexibleSavingsPosition
-import com.marcoeckstein.binance.api.client.prvt.account.earn.LendingType
 import com.marcoeckstein.binance.api.client.prvt.account.earn.LockedStakingInterest
 import com.marcoeckstein.binance.api.client.prvt.account.earn.LockedStakingPosition
 import com.marcoeckstein.binance.api.client.prvt.account.earn.request.FlexibleSavingsInterestHistoryQuery
@@ -339,7 +338,6 @@ class BinancePrivateApiRestClient internal constructor(
                 query.asset,
                 query.startTime?.toEpochMilli(),
                 query.endTime?.toEpochMilli(),
-                LendingType.STAKING, // TODO: Evaluate if it makes sense to have this as part of the query
             )
         )
 
